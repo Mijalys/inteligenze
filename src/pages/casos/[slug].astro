@@ -4,6 +4,8 @@ import PageHero from '@/components/PageHero.astro'
 import CtaBand from '@/components/CtaBand.astro'
 import { cases, serviceLabels, type Case } from '@/data/cases'
 import { caseSchema } from '@/lib/schema'
+import { Picture, getImage } from 'astro:assets'
+import { caseImage } from '@/lib/caseImages'
 
 export function getStaticPaths() {
   return cases.map((c, i) => ({
@@ -24,6 +26,10 @@ const facts = [
   { k: 'Industria', v: item.industry },
   { k: 'Ubicación', v: item.location },
 ].filter((f) => f.v)
+// La portada del caso también es su imagen al compartir en redes
+const og = item.cover
+  ? await getImage({ src: caseImage(item.cover.file), width: 1200, height: 630, fit: 'cover', position: 'top', format: 'jpg' })
+  : undefined
 ---
 
 <Base
@@ -31,7 +37,8 @@ const facts = [
   description={item.summary}
   pageType="ItemPage"
   breadcrumbs={crumbs}
-  schema={[caseSchema(item)]}
+  image={og?.src}
+  schema={[caseSchema(item, og ? new URL(og.src, 'https://inteligenze.com').toString() : undefined)]}
 >
   <PageHero eyebrow={item.client} title={item.title} lead={item.summary} crumbs={crumbs}>
     <dl class="mt-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-6 lg:grid-cols-4">
@@ -45,6 +52,22 @@ const facts = [
       }
     </dl>
   </PageHero>
+
+  {
+    item.cover && (
+      <div class="wrap pb-10">
+        <Picture
+          src={caseImage(item.cover.file)}
+          alt={item.cover.alt}
+          formats={['avif', 'webp']}
+          widths={[640, 1080, 1600]}
+          sizes="(max-width: 1240px) 100vw, 1144px"
+          loading="eager"
+          class="w-full rounded-[24px] border border-white/10 bg-ink-3"
+        />
+      </div>
+    )
+  }
 
   <section class="pb-8" aria-label="Resultados">
     <div class="wrap">
@@ -110,6 +133,26 @@ const facts = [
       </aside>
     </div>
   </section>
+
+  {
+    item.gallery && item.gallery.length > 0 && (
+      <section class="wrap grid gap-6 pb-24" aria-label="Galería">
+        {item.gallery.map((g) => (
+          <figure>
+            <Picture
+              src={caseImage(g.file)}
+              alt={g.alt}
+              formats={['avif', 'webp']}
+              widths={[640, 1080, 1600]}
+              sizes="(max-width: 1240px) 100vw, 1144px"
+              class="mx-auto w-auto max-w-full rounded-[24px] border border-white/10 bg-ink-3"
+            />
+            <figcaption class="mt-3 text-center text-[14px] text-muted">{g.alt}</figcaption>
+          </figure>
+        ))}
+      </section>
+    )
+  }
 
   <nav class="wrap" aria-label="Siguiente caso">
     <a href={`/casos/${next.slug}/`} class="group block border-t border-white/10 pt-8">

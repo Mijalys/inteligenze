@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets'
 import { type Case, serviceLabels } from '@/data/cases'
+import { caseImage } from '@/lib/caseImages'
 interface Props {
   item: Case
   headingLevel?: 'h2' | 'h3'
@@ -9,29 +11,48 @@ const lead = item.metrics[0]
 ---
 
 <article
-  class="glass group relative flex h-full flex-col p-6 transition-colors hover:border-cyan/40"
+  class="glass group relative flex h-full flex-col overflow-hidden transition-colors hover:border-cyan/40"
   data-services={item.services.join(' ')}
   data-sectors={item.sectors.join('|')}
 >
-  <div class="flex flex-wrap items-center gap-2 text-[13px] text-muted">
-    <span>{item.industry}</span>
-    {item.period && <span aria-hidden="true">·</span>}
-    {item.period && <span>{item.period}</span>}
-  </div>
-  <p class="mt-6 font-mono text-sm text-cyan">{item.client}</p>
-  <H class="mt-2 text-2xl font-medium tracking-tight">
-    <a href={`/casos/${item.slug}/`} class="after:absolute after:inset-0 after:rounded-[24px]">{item.title}</a>
-  </H>
-  <p class="mt-3 text-[15px] text-mist">{item.summary}</p>
-  <div class="mt-auto flex items-end justify-between gap-4 pt-8">
+  <div class="relative aspect-[16/10] overflow-hidden border-b border-white/10 bg-ink-3">
     {
-      lead && (
-        <div>
-          <p class="text-4xl font-medium tracking-tight text-white">{lead.value}</p>
-          <p class="mt-1 text-[13px] text-muted">{lead.label}</p>
+      item.cover ? (
+        <Image
+          src={caseImage(item.cover.file)}
+          alt={item.cover.alt}
+          widths={[480, 720]}
+          sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+          class="size-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+      ) : (
+        <div class="beam flex size-full items-end p-6" aria-hidden="true">
+          <span class="relative font-mono text-sm text-cyan">{item.tech.join(' · ')}</span>
         </div>
       )
     }
-    <span class="shrink-0 whitespace-nowrap rounded-full border border-white/12 px-3 py-1 text-[12px] text-mist">{serviceLabels[item.services[0]]}</span>
+  </div>
+  <div class="flex flex-1 flex-col p-6">
+    <div class="flex flex-wrap items-center gap-2 text-[13px] text-muted">
+      <span>{item.industry}</span>
+      {item.period && <span aria-hidden="true">·</span>}
+      {item.period && <span>{item.period}</span>}
+    </div>
+    <p class="mt-5 font-mono text-sm text-cyan">{item.client}</p>
+    <H class="mt-2 text-2xl font-medium tracking-tight">
+      <a href={`/casos/${item.slug}/`} class="after:absolute after:inset-0 after:rounded-[24px]">{item.title}</a>
+    </H>
+    <p class="mt-3 text-[15px] text-mist">{item.summary}</p>
+    <div class="mt-auto flex items-end justify-between gap-4 pt-8">
+      {
+        lead && (
+          <div>
+            <p class="text-4xl font-medium tracking-tight text-white">{lead.value}</p>
+            <p class="mt-1 text-[13px] text-muted">{lead.label}</p>
+          </div>
+        )
+      }
+      <span class="shrink-0 whitespace-nowrap rounded-full border border-white/12 px-3 py-1 text-[12px] text-mist">{serviceLabels[item.services[0]]}</span>
+    </div>
   </div>
 </article>

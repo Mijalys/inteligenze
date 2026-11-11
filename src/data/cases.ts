@@ -3,6 +3,8 @@
 // momento. La web lo dice así en cada caso: no se presentan como clientes de Inteligenze.
 
 export type Metric = { value: string; label: string }
+// Imágenes en src/assets/cases/, copiadas del portafolio (nombre de archivo + texto alternativo)
+export type CaseImage = { file: string; alt: string }
 
 export type Case = {
   slug: string
@@ -24,6 +26,8 @@ export type Case = {
   deliverables: string[]
   tech: string[]
   source: string
+  cover?: CaseImage
+  gallery?: CaseImage[]
 }
 
 export const serviceLabels: Record<Case['services'][number], string> = {
@@ -69,6 +73,10 @@ export const cases: Case[] = [
     deliverables: ['SaaS de ventas por WhatsApp', 'Agentes de IA y software de Help Desk', 'Workflows con LLMs para atención, ventas y operaciones'],
     tech: ['LangChain', 'Vertex AI', 'WhatsApp'],
     source: `${portfolio}/ventabot/`,
+    cover: { file: 'ventabot-cover.jpg', alt: 'Ventabot: el anuncio en Facebook, el asistente de IA en WhatsApp y el panel del equipo de ventas' },
+    gallery: [
+      { file: 'ventabot-flujo.jpg', alt: 'El flujo completo: el cliente ve el anuncio, el asistente de IA vende y califica, y el equipo cierra la venta' },
+    ],
   },
   {
     slug: 'alicorp-rag-esg',
@@ -120,6 +128,12 @@ export const cases: Case[] = [
     deliverables: ['Arquetipos de usuario', 'Design system', 'Flujo de creación de campañas', 'Detalle y seguimiento de campañas'],
     tech: ['Design system', 'Investigación de usuarios'],
     source: `${portfolio}/notifai/`,
+    cover: { file: 'notifai-cover.jpg', alt: 'Pantallas de Notifai con el asistente para crear campañas y el detalle de una campaña' },
+    gallery: [
+      { file: 'notifai-campana.jpg', alt: 'Detalle de una campaña con los contactos, su estado y las llamadas grabadas, con los datos personales difuminados' },
+      { file: 'notifai-wizard.jpg', alt: 'Asistente de tres pasos para crear una campaña, con fechas y horarios' },
+      { file: 'notifai-personas.jpg', alt: 'Arquetipos de usuario con sus objetivos, necesidades y puntos de dolor' },
+    ],
   },
   {
     slug: 'caja-metropolitana',
@@ -150,6 +164,10 @@ export const cases: Case[] = [
     deliverables: ['Auditoría UX/UI', 'Arquitectura de información', 'Flujograma de usuario', 'Wireframes y diseño UI multidispositivo'],
     tech: ['iOS nativo', 'Android nativo', 'Angular', 'Azure'],
     source: `${portfolio}/caja-metropolitana/`,
+    cover: { file: 'cajametro-app.jpg', alt: 'Pantallas de la app de Caja Metropolitana con cuentas, pago de préstamos y pago de servicios' },
+    gallery: [
+      { file: 'cajametro-homebanking.jpg', alt: 'Pantallas del homebanking web, desde el ingreso con código hasta la compra y venta de dólares' },
+    ],
   },
   {
     slug: 'redeban',
@@ -178,6 +196,11 @@ export const cases: Case[] = [
     deliverables: ['Historias de usuario', 'Auditoría UX/UI', 'Arquitectura de información', 'Wireframes y diseño UI'],
     tech: ['Angular', 'Azure'],
     source: `${portfolio}/redeban/`,
+    cover: { file: 'redeban-dashboard.jpg', alt: 'Panel de Redeban con el total de ventas, el gráfico de ingresos de los últimos días y el acceso al código QR' },
+    gallery: [
+      { file: 'redeban-terminales.jpg', alt: 'Listado de terminales y usuarios de una sucursal, con los datos del comercio difuminados' },
+      { file: 'redeban-cover.jpg', alt: 'Varias vistas del panel con gráficos de barras y de líneas' },
+    ],
   },
   {
     slug: 'primax',
@@ -203,6 +226,10 @@ export const cases: Case[] = [
     deliverables: ['Experiencia de usuario de la plataforma', 'Clústeres de clientes', 'Customer credit para franquiciados'],
     tech: ['E-commerce B2B'],
     source: `${portfolio}/primax/`,
+    cover: { file: 'primax-plataforma.jpg', alt: 'La plataforma de Primax Solutions en web y móvil, con los pedidos en tres pasos y la línea de crédito' },
+    gallery: [
+      { file: 'primax-mobile.jpg', alt: 'Pantallas móviles de reservas, resumen de un pedido y centro de ayuda' },
+    ],
   },
   {
     slug: 'niubiz',
@@ -227,6 +254,11 @@ export const cases: Case[] = [
     deliverables: ['Impact Mapping', 'Product Vision', 'Design Sprint', 'Wireframes y diseño UI'],
     tech: ['Design Sprint', 'APIs de pago'],
     source: `${portfolio}/niubiz/`,
+    cover: { file: 'niubiz-procesos.jpg', alt: 'Vistas del portal de Niubiz con los procesos de afiliación, autorización, compensación y liquidación' },
+    gallery: [
+      { file: 'niubiz-portal.jpg', alt: 'Pantallas de ayuda y de documentación de préstamo' },
+      { file: 'niubiz-login.jpg', alt: 'Pantalla de procesos con el acceso al portal' },
+    ],
   },
   {
     slug: 'caja-cusco',
@@ -251,6 +283,10 @@ export const cases: Case[] = [
     deliverables: ['UX Board', 'User flow', 'Wireframes', 'Diseño UI y desarrollo front-end'],
     tech: ['Angular Material'],
     source: `${portfolio}/caja-cusco/`,
+    cover: { file: 'cajacusco-backoffice.jpg', alt: 'Pantallas del back office de créditos de Caja Cusco' },
+    gallery: [
+      { file: 'cajacusco-bandeja.jpg', alt: 'Bandeja de entrada del back office de créditos en un portátil' },
+    ],
   },
   {
     slug: 'ripley',
@@ -274,6 +310,10 @@ export const cases: Case[] = [
     deliverables: ['Sesión de alcance', 'Auditoría UX/UI', 'Diseño visual', 'Estructura del sitio'],
     tech: ['Design System Morita'],
     source: `${portfolio}/ripley/`,
+    cover: { file: 'ripley-srp.jpg', alt: 'Pantallas del sistema Ripley Puntos con las reglas de acumulación y el estado de cuenta de un cliente' },
+    gallery: [
+      { file: 'ripley-before-after.jpg', alt: 'Comparación entre el sistema de puntos anterior y el rediseñado' },
+    ],
   },
 ]
 

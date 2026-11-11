@@ -132,7 +132,7 @@ export function serviceSchema(s: Service) {
   }
 }
 
-export function caseSchema(c: Case) {
+export function caseSchema(c: Case, image?: string) {
   const path = `/casos/${c.slug}/`
   return {
     '@type': 'CreativeWork',
@@ -146,6 +146,7 @@ export function caseSchema(c: Case) {
     publisher: { '@id': ORG_ID },
     about: c.industry,
     isBasedOn: c.source,
+    ...(image ? { image } : {}),
     keywords: [...c.tech, c.industry].join(', '),
   }
 }
