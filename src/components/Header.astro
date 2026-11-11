@@ -1,10 +1,16 @@
 ---
 import { Image } from 'astro:assets'
 import logo from '@/assets/logo-on-dark.png'
+import Icon from '@/components/Icon.astro'
 import { nav } from '@/data/site'
+import { services } from '@/data/services'
 
 const path = Astro.url.pathname
 const isActive = (href: string) => path === href || path.startsWith(href)
+const linkClass = (href: string) => [
+  'flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-[15px] transition-colors',
+  isActive(href) ? 'bg-white/10 text-white' : 'text-mist hover:text-white',
+]
 ---
 
 <header class="absolute inset-x-0 top-0 z-30">
@@ -16,20 +22,60 @@ const isActive = (href: string) => path === href || path.startsWith(href)
     <nav aria-label="Principal" class="hidden lg:block">
       <ul class="flex items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.04] p-1.5 backdrop-blur-xl">
         {
-          nav.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-                class:list={[
-                  'block rounded-xl px-4 py-2.5 text-[15px] transition-colors',
-                  isActive(item.href) ? 'bg-white/10 text-white' : 'text-mist hover:text-white',
-                ]}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
+          nav.map((item) =>
+            item.href === '/servicios/' ? (
+              <li class="group relative" data-dropdown>
+                <button
+                  type="button"
+                  class:list={linkClass(item.href)}
+                  aria-expanded="false"
+                  aria-controls="menu-servicios"
+                  data-dropdown-button
+                >
+                  {item.label}
+                  <Icon name="chevron" class="size-4 transition-transform group-hover:rotate-180 group-[.is-open]:rotate-180" />
+                </button>
+                <div
+                  id="menu-servicios"
+                  class="invisible absolute left-0 top-full z-40 pt-3 opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 group-[.is-open]:visible group-[.is-open]:opacity-100"
+                >
+                  <div class="w-[560px] rounded-3xl border border-white/12 bg-ink-2/95 p-3 shadow-[0_30px_80px_rgb(0_0_0/0.5)] backdrop-blur-xl">
+                    <ul class="grid gap-1">
+                      {services.map((s) => (
+                        <li>
+                          <a
+                            href={`/servicios/${s.slug}/`}
+                            class="flex gap-4 rounded-2xl p-4 transition-colors hover:bg-white/[0.06]"
+                            aria-current={path.startsWith(`/servicios/${s.slug}/`) ? 'page' : undefined}
+                          >
+                            <span class="flex size-11 shrink-0 items-center justify-center rounded-xl border border-cyan/30 bg-cyan/10 text-cyan">
+                              <Icon name={s.icon} class="size-6" />
+                            </span>
+                            <span>
+                              <span class="block font-medium text-white">{s.name}</span>
+                              <span class="mt-0.5 block text-[14px] leading-snug text-mist">{s.short}</span>
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                    <a
+                      href="/servicios/"
+                      class="mt-2 flex items-center justify-between rounded-2xl border-t border-white/10 px-4 pb-2 pt-4 text-[14px] text-cyan hover:text-cyan-soft"
+                    >
+                      Ver todos los servicios y cómo trabajamos <span aria-hidden="true">→</span>
+                    </a>
+                  </div>
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} class:list={linkClass(item.href)}>
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
         }
       </ul>
     </nav>
@@ -45,7 +91,7 @@ const isActive = (href: string) => path === href || path.startsWith(href)
           <svg class="size-5 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
           <svg class="hidden size-5 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
         </summary>
-        <div class="glass absolute right-0 top-14 w-[min(86vw,320px)] p-3">
+        <div class="absolute right-0 top-14 max-h-[80vh] w-[min(88vw,340px)] overflow-y-auto rounded-3xl border border-white/12 bg-ink-2/95 p-3 shadow-[0_30px_80px_rgb(0_0_0/0.5)] backdrop-blur-xl">
           <ul class="grid gap-1">
             {
               nav.map((item) => (
@@ -53,6 +99,18 @@ const isActive = (href: string) => path === href || path.startsWith(href)
                   <a href={item.href} class="block rounded-xl px-4 py-3 text-base text-mist hover:bg-white/5 hover:text-white">
                     {item.label}
                   </a>
+                  {item.href === '/servicios/' && (
+                    <ul class="mb-2 ml-4 grid gap-1 border-l border-white/10 pl-2">
+                      {services.map((s) => (
+                        <li>
+                          <a href={`/servicios/${s.slug}/`} class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] text-mist hover:bg-white/5 hover:text-white">
+                            <Icon name={s.icon} class="size-5 text-cyan" />
+                            {s.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))
             }
@@ -65,3 +123,28 @@ const isActive = (href: string) => path === href || path.startsWith(href)
     </div>
   </div>
 </header>
+
+<script>
+  // Desplegable de Servicios: se abre al pasar el mouse o con el foco (CSS);
+  // aquí se suma el clic (pantallas táctiles) y la tecla Escape.
+  document.querySelectorAll<HTMLElement>('[data-dropdown]').forEach((dd) => {
+    const button = dd.querySelector<HTMLButtonElement>('[data-dropdown-button]')!
+    const set = (open: boolean) => {
+      dd.classList.toggle('is-open', open)
+      button.setAttribute('aria-expanded', String(open))
+    }
+    button.addEventListener('click', () => set(!dd.classList.contains('is-open')))
+    dd.addEventListener('mouseenter', () => button.setAttribute('aria-expanded', 'true'))
+    dd.addEventListener('mouseleave', () => set(false))
+    dd.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        set(false)
+        button.blur()
+        button.focus({ preventScroll: true })
+      }
+    })
+    document.addEventListener('click', (e) => {
+      if (!dd.contains(e.target as Node)) set(false)
+    })
+  })
+</script>

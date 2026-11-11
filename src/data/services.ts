@@ -1,8 +1,11 @@
+import type { IconName } from '@/components/Icon.astro'
+
 export type Faq = { q: string; a: string }
 
 export type Service = {
   slug: 'fabrica-con-ia' | 'automatizacion-con-ia' | 'ciberseguridad'
   name: string
+  icon: IconName
   short: string
   cardCta: string
   title: string // <title>
@@ -24,6 +27,7 @@ export type Service = {
 export const services: Service[] = [
   {
     slug: 'fabrica-con-ia',
+    icon: 'bot',
     name: 'Fábrica con IA',
     short:
       'Software y agentes a medida, construidos con IA y entregados por ciclos con alcance, fecha y precio acordados.',
@@ -82,6 +86,7 @@ export const services: Service[] = [
   },
   {
     slug: 'automatizacion-con-ia',
+    icon: 'flow',
     name: 'Automatización con IA',
     short:
       'Eliminamos tareas manuales y conectamos los sistemas que hoy no se hablan, un caso operativo a la vez.',
@@ -150,6 +155,7 @@ export const services: Service[] = [
   },
   {
     slug: 'ciberseguridad',
+    icon: 'shield',
     name: 'Ciberseguridad',
     short:
       'Prevenimos, detectamos y respondemos a amenazas, incluidos ataques de phishing y otros ataques potenciados por IA.',

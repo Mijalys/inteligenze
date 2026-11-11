@@ -6,11 +6,20 @@ import CaseCard from '@/components/CaseCard.astro'
 import Faq from '@/components/Faq.astro'
 import ContactForm from '@/components/ContactForm.astro'
 import FluidOrb from '@/components/ui/fluid-orb'
+import Icon from '@/components/Icon.astro'
 import { homeFaqs, method, proof, promise, site } from '@/data/site'
 import { services } from '@/data/services'
 import { sectors } from '@/data/sectors'
 import { featuredCases } from '@/data/cases'
 import { faqPage } from '@/lib/schema'
+
+// Resultados medidos de los casos; bar = largo relativo de la barra (escala visual)
+const results = [
+  { value: '−36%', dir: 'down', bar: 72, label: 'Tiempo en pedidos recurrentes', source: 'Primax Solutions', slug: 'primax' },
+  { value: '−25%', dir: 'down', bar: 50, label: 'Consultas a atención al cliente', source: 'Caja Metropolitana', slug: 'caja-metropolitana' },
+  { value: '+25%', dir: 'up', bar: 50, label: 'Satisfacción del cliente', source: 'Redeban', slug: 'redeban' },
+  { value: '+20%', dir: 'up', bar: 40, label: 'Retención móvil', source: 'Caja Metropolitana', slug: 'caja-metropolitana' },
+] as const
 
 const title = 'Inteligenze | Consultora de IA en Perú: agentes y automatización'
 const description =
@@ -89,20 +98,39 @@ const description =
   <section class="section" aria-labelledby="propuesta">
     <div class="wrap">
       <SectionHeading id="propuesta" eyebrow="Alcance, fecha y precio acordados" title="Antes de empezar, sabes qué recibes, cuándo y cuánto pagas." />
-      <div class="mt-12 grid gap-4 md:grid-cols-3">
-        {
-          promise.map((p, i) => (
-            <div class="glass p-7">
-              <span class="font-mono text-sm text-cyan">0{i + 1}</span>
-              <h3 class="mt-8 text-2xl font-medium tracking-tight">{p.title}</h3>
-              <p class="mt-3 text-mist">{p.body}</p>
-            </div>
-          ))
-        }
+      <div class="mt-12">
+        <div class="grid gap-4 md:grid-cols-3">
+          {
+            promise.map((p, i) => (
+              <div class="glass p-7">
+                <div class="flex items-center justify-between">
+                  <span class="flex size-12 items-center justify-center rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan">
+                    <Icon name={(['scope', 'calendar', 'price'] as const)[i]} class="size-6" />
+                  </span>
+                  <span class="font-mono text-sm text-muted">0{i + 1}</span>
+                </div>
+                <h3 class="mt-8 text-2xl font-medium tracking-tight">{p.title}</h3>
+                <p class="mt-3 text-mist">{p.body}</p>
+              </div>
+            ))
+          }
+        </div>
+        <!-- Los tres acuerdos convergen en un solo documento -->
+        <svg class="hidden h-16 w-full text-cyan md:block" viewBox="0 0 600 64" preserveAspectRatio="none" fill="none" aria-hidden="true">
+          <path d="M100 0v24h400V0M300 24v40" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.2" vector-effect="non-scaling-stroke"></path>
+        </svg>
+        <div class="mt-6 flex justify-center md:mt-0">
+          <div class="glass flex flex-col items-center gap-4 px-6 py-5 text-center sm:flex-row sm:text-left">
+            <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-cyan text-ink shadow-[0_0_40px_rgb(116_255_246/0.45)]">
+              <Icon name="contract" class="size-6" />
+            </span>
+            <p class="max-w-md text-mist">
+              <strong class="block font-medium text-white">Todo empieza con un diagnóstico inicial.</strong>
+              Sales con el plan, el alcance y el precio del primer ciclo, por escrito.
+            </p>
+          </div>
+        </div>
       </div>
-      <p class="mt-8 max-w-3xl text-lg text-mist">
-        Todo empieza con un diagnóstico inicial. Sales con el plan, el alcance y el precio del primer ciclo.
-      </p>
     </div>
   </section>
 
@@ -132,6 +160,36 @@ const description =
     </div>
   </section>
 
+  <!-- Resultados medidos -->
+  <section class="pb-[clamp(72px,10vw,136px)]" aria-labelledby="resultados">
+    <div class="wrap">
+      <div class="glass relative overflow-hidden p-7 sm:p-10">
+        <div class="glow-bottom" aria-hidden="true"></div>
+        <div class="relative">
+          <p class="eyebrow">Resultados medidos</p>
+          <h2 id="resultados" class="mt-4 max-w-2xl text-2xl font-medium tracking-tight sm:text-3xl">Lo que cambió en cada producto, antes y después.</h2>
+          <ul class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {
+              results.map((r) => (
+                <li>
+                  <p class="flex items-center gap-2 text-5xl font-medium tracking-tight">
+                    <Icon name={r.dir === 'up' ? 'arrowUp' : 'arrowDown'} class="size-7 text-cyan" />
+                    {r.value}
+                  </p>
+                  <div class="mt-4 h-1.5 rounded-full bg-white/10">
+                    <div class="h-1.5 rounded-full bg-gradient-to-r from-cyan-deep to-cyan" style={`width:${r.bar}%`} />
+                  </div>
+                  <p class="mt-3 text-white">{r.label}</p>
+                  <a href={`/casos/${r.slug}/`} class="mt-1 inline-block text-[14px] text-muted hover:text-cyan">{r.source} →</a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- 5. Servicios -->
   <section id="servicios" class="section pt-0" aria-labelledby="servicios-titulo">
     <div class="wrap">
@@ -140,10 +198,23 @@ const description =
         {
           services.map((s, i) => (
             <article class="glass group relative flex flex-col p-7 transition-colors hover:border-cyan/40">
-              <span class="font-mono text-sm text-cyan">0{i + 1}</span>
-              <h3 class="mt-10 text-3xl font-medium tracking-tight">{s.name}</h3>
+              <div class="flex items-center justify-between">
+                <span class="flex size-14 items-center justify-center rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan">
+                  <Icon name={s.icon} class="size-7" />
+                </span>
+                <span class="font-mono text-sm text-muted">0{i + 1}</span>
+              </div>
+              <h3 class="mt-8 text-3xl font-medium tracking-tight">{s.name}</h3>
               <p class="mt-3 text-mist">{s.short}</p>
-              <a href={`/servicios/${s.slug}/`} class="mt-10 inline-flex items-center gap-2 font-medium text-cyan after:absolute after:inset-0 after:rounded-[24px]">
+              <ul class="mt-6 grid gap-2.5 border-t border-white/10 pt-6 text-[15px]">
+                {s.deliverables.map((d) => (
+                  <li class="flex items-start gap-2.5">
+                    <Icon name="check" class="mt-0.5 size-4 shrink-0 text-cyan" />
+                    {d.title}
+                  </li>
+                ))}
+              </ul>
+              <a href={`/servicios/${s.slug}/`} class="mt-auto pt-8 inline-flex items-center gap-2 font-medium text-cyan after:absolute after:inset-0 after:rounded-[24px]">
                 {s.cardCta} <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
               </a>
             </article>
@@ -161,7 +232,10 @@ const description =
         {
           sectors.map((s) => (
             <a href={`/sectores/${s.slug}/`} class="glass group block p-7 transition-colors hover:border-cyan/40">
-              <h3 class="text-2xl font-medium tracking-tight">{s.name}</h3>
+              <span class="flex size-12 items-center justify-center rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan">
+                <Icon name={s.icon} class="size-6" />
+              </span>
+              <h3 class="mt-6 text-2xl font-medium tracking-tight">{s.name}</h3>
               <p class="mt-3 text-mist">{s.summary}</p>
               <span class="mt-8 inline-flex items-center gap-2 text-[15px] text-cyan">
                 IA para {s.name.toLowerCase()} <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>

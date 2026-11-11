@@ -1,20 +1,38 @@
 ---
+// Línea de tiempo del método: horizontal en escritorio, vertical en móvil.
+import Icon, { type IconName } from '@/components/Icon.astro'
+
 interface Props {
-  steps: { title: string; body: string }[]
+  steps: { title: string; body: string; icon?: IconName; deliverable?: string }[]
 }
 const { steps } = Astro.props
+const defaults: IconName[] = ['search', 'contract', 'build', 'chart']
 ---
 
-<ol class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+<ol class="relative grid gap-8 lg:grid-cols-4 lg:gap-6">
+  <!-- Conector: vertical en móvil, horizontal en escritorio -->
+  <span
+    class="absolute bottom-8 left-[27px] top-8 w-px bg-gradient-to-b from-cyan/70 via-cyan/30 to-cyan/0 lg:bottom-auto lg:left-[12.5%] lg:right-[12.5%] lg:top-[27px] lg:h-px lg:w-auto lg:bg-gradient-to-r lg:from-cyan/70 lg:via-cyan/40 lg:to-cyan/70"
+    aria-hidden="true"></span>
   {
     steps.map((s, i) => (
-      <li class="glass relative flex flex-col p-6">
-        <span class="font-mono text-sm text-cyan">0{i + 1}</span>
-        <h3 class="mt-6 text-xl font-medium tracking-tight">{s.title}</h3>
-        <p class="mt-2 text-[15px] text-mist">{s.body}</p>
-        {i < steps.length - 1 && (
-          <span class="absolute -right-3 top-1/2 hidden h-px w-6 bg-gradient-to-r from-cyan/60 to-transparent lg:block" aria-hidden="true" />
-        )}
+      <li class="relative grid grid-cols-[56px_1fr] content-start gap-5 lg:grid-cols-1 lg:justify-items-center lg:gap-0 lg:text-center">
+        <span class="relative z-10 flex size-14 items-center justify-center rounded-full border border-cyan/50 bg-ink text-cyan shadow-[0_0_30px_rgb(116_255_246/0.25)]">
+          <Icon name={s.icon ?? defaults[i % defaults.length]} class="size-6" />
+          <span class="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-cyan font-mono text-[11px] font-semibold text-ink">
+            {i + 1}
+          </span>
+        </span>
+        <div class="lg:mt-6 lg:max-w-[260px]">
+          <h3 class="text-xl font-medium tracking-tight">{s.title}</h3>
+          <p class="mt-2 text-[15px] text-mist">{s.body}</p>
+          {s.deliverable && (
+            <p class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-[13px] text-mist">
+              <Icon name="check" class="size-4 text-cyan" />
+              <span><span class="text-muted">Entrega:</span> {s.deliverable}</span>
+            </p>
+          )}
+        </div>
       </li>
     ))
   }

@@ -1,6 +1,9 @@
+import type { IconName } from '@/components/Icon.astro'
+
 export type Sector = {
   slug: 'finanzas' | 'automotriz' | 'logistica'
   name: string
+  icon: IconName
   summary: string // línea del Inicio
   title: string
   metaDescription: string
@@ -13,6 +16,7 @@ export type Sector = {
 export const sectors: Sector[] = [
   {
     slug: 'finanzas',
+    icon: 'bank',
     name: 'Finanzas',
     summary: 'Atención al cliente, cobranzas, onboarding y seguridad de la información.',
     title: 'IA para entidades financieras y fintechs',
@@ -33,6 +37,7 @@ export const sectors: Sector[] = [
   },
   {
     slug: 'automotriz',
+    icon: 'car',
     name: 'Automotriz',
     summary: 'Atención posventa, agendamiento, cotización y seguimiento de clientes.',
     title: 'IA para concesionarias y empresas automotrices',
@@ -53,6 +58,7 @@ export const sectors: Sector[] = [
   },
   {
     slug: 'logistica',
+    icon: 'truck',
     name: 'Logística',
     summary: 'Trazabilidad, tracking de carga y automatización de operaciones.',
     title: 'IA para logística: tracking de carga y automatización',

@@ -65,15 +65,26 @@ export const promise = [
 
 export const method = [
   {
+    icon: 'search' as const,
+    deliverable: 'Mapa del proyecto y prioridades',
     title: 'Diagnóstico',
     body: 'Entendemos tu negocio, tus procesos y tus riesgos, y priorizamos dónde la IA da resultados primero.',
   },
-  { title: 'Acuerdo', body: 'Fijamos alcance, fecha y precio por escrito.' },
   {
+    icon: 'contract' as const,
+    deliverable: 'Alcance, fecha y precio por escrito',
+    title: 'Acuerdo',
+    body: 'Fijamos alcance, fecha y precio por escrito.',
+  },
+  {
+    icon: 'build' as const,
+    deliverable: 'Entregas que pruebas y apruebas',
     title: 'Construcción por ciclos',
     body: 'Entregamos avances que puedes ver, probar y aprobar en cada ciclo.',
   },
   {
+    icon: 'chart' as const,
+    deliverable: 'Resultados medidos',
     title: 'Operación y mejora',
     body: 'Acompañamos la puesta en marcha, medimos resultados y ajustamos.',
   },
