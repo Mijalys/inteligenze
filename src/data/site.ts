@@ -34,11 +34,14 @@ export const founder = {
   portfolio: 'https://mijalys-silva.vercel.app',
 }
 
-export const nav = [
+export type NavItem = { label: string; href: string; external?: boolean }
+
+export const nav: NavItem[] = [
   { label: 'Servicios', href: '/servicios/' },
   { label: 'Casos', href: '/casos/' },
   { label: 'Sectores', href: '/sectores/' },
   { label: 'Diagnósticos gratuitos', href: '/diagnosticos/' },
+  { label: 'Formación', href: 'https://headlandx.com', external: true },
   { label: 'Nosotros', href: '/nosotros/' },
 ]
 

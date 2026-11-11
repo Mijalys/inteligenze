@@ -47,6 +47,7 @@ const ld = graph(
 <html lang="es-PE">
   <head>
     <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
@@ -90,5 +91,46 @@ const ld = graph(
       <slot />
     </main>
     <Footer />
+    <script is:inline>
+      // Animaciones de entrada: cada bloque entra al aparecer en pantalla, en cascada con sus vecinos.
+      ;(function () {
+        var targets = document.querySelectorAll('main .glass, main [data-reveal]')
+        var still = matchMedia('(prefers-reduced-motion: reduce)').matches
+        function countUp(el) {
+          var m = el.textContent.match(/^([^\d]*)(\d+)(.*)$/)
+          if (!m || still) return
+          var end = +m[2], t0 = performance.now(), dur = 1200
+          function step(t) {
+            var p = Math.min((t - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3)
+            el.textContent = m[1] + Math.round(end * e) + m[3]
+            if (p < 1) requestAnimationFrame(step)
+          }
+          requestAnimationFrame(step)
+        }
+        function show(el) {
+          el.classList.add('is-in')
+          el.querySelectorAll('[data-countup]').forEach(countUp)
+        }
+        if (!('IntersectionObserver' in window)) return targets.forEach(show)
+        targets.forEach(function (el) {
+          var item = el.parentElement && el.parentElement.tagName === 'LI' ? el.parentElement : el
+          var i = item.parentElement ? Array.prototype.indexOf.call(item.parentElement.children, item) : 0
+          el.style.setProperty('--delay', Math.min(i, 6) * 90 + 'ms')
+          el.style.setProperty('--tilt', (i % 2 ? 2 : -2) + 'deg')
+        })
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (en) {
+              if (en.isIntersecting) {
+                show(en.target)
+                io.unobserve(en.target)
+              }
+            })
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+        )
+        targets.forEach(function (el) { io.observe(el) })
+      })()
+    </script>
   </body>
 </html>

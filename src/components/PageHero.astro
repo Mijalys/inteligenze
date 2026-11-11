@@ -29,9 +29,11 @@ const { eyebrow, title, lead, crumbs } = Astro.props
         </nav>
       )
     }
-    {eyebrow && <p class="eyebrow mb-6">{eyebrow}</p>}
-    <h1 class="sheen max-w-4xl text-[clamp(40px,6.4vw,80px)]">{title}</h1>
-    {lead && <p class="mt-6 max-w-2xl text-lg text-mist sm:text-xl">{lead}</p>}
+    {eyebrow && <p class="eyebrow enter mb-6">{eyebrow}</p>}
+    <h1 class="max-w-4xl text-[clamp(40px,6.4vw,80px)]">
+      {title.split(' ').map((w, i) => <span class="word sheen" style={`--i:${i}`}>{w}</span><span> </span>)}
+    </h1>
+    {lead && <p class="enter mt-6 max-w-2xl text-lg text-mist sm:text-xl" style="--delay:450ms">{lead}</p>}
     <slot />
   </div>
 </section>

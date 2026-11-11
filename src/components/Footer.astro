@@ -29,7 +29,18 @@ const owner = [site.legalName, site.ruc ? `RUC ${site.ruc}` : null].filter(Boole
     <nav aria-label="Secciones">
       <h2 class="eyebrow mb-4">Secciones</h2>
       <ul class="grid gap-2.5 text-[15px] text-mist">
-        {nav.filter((n) => n.href !== '/diagnosticos/').map((n) => <li><a class="hover:text-white" href={n.href}>{n.label}</a></li>)}
+        {
+          nav
+            .filter((n) => n.href !== '/diagnosticos/')
+            .map((n) => (
+              <li>
+                <a class="hover:text-white" href={n.href} {...(n.external ? { target: '_blank', rel: 'noopener' } : {})}>
+                  {n.label}
+                  {n.external && <span class="text-cyan" aria-hidden="true"> ↗</span><span class="sr-only"> (se abre en otra pestaña)</span>}
+                </a>
+              </li>
+            ))
+        }
         <li><a class="hover:text-white" href="/contacto/">Contacto</a></li>
       </ul>
     </nav>

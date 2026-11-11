@@ -33,25 +33,25 @@ const description =
     <div class="glow-bottom" aria-hidden="true"></div>
     <div class="wrap relative grid items-center gap-14 lg:grid-cols-[1.1fr_1fr]">
       <div>
-        <p class="chip">
-          <svg class="size-4 text-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"></path></svg>
+        <p class="chip enter">
+          <svg class="pulse-dot size-4 text-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"></path></svg>
           {site.tagline}
         </p>
         <h1 class="mt-8 text-[clamp(42px,6.6vw,84px)] font-medium leading-[0.98] tracking-[-0.045em]">
-          <span class="sheen">Construimos, automatizamos y protegemos tu empresa</span>{' '}
-          <span class="whitespace-nowrap"><span class="brace">{'{'}</span><span class="sheen"> con IA </span><span class="brace">{'}'}</span></span>
+          {'Construimos, automatizamos y protegemos tu empresa'.split(' ').map((w, i) => <span class="word sheen" style={`--i:${i}`}>{w}</span><span> </span>)}
+          <span class="whitespace-nowrap"><span class="brace">{'{'}</span><span class="word sheen" style="--i:7">&nbsp;con IA&nbsp;</span><span class="brace">{'}'}</span></span>
         </h1>
-        <p class="mt-7 max-w-xl text-lg text-mist sm:text-xl">
+        <p class="enter mt-7 max-w-xl text-lg text-mist sm:text-xl" style="--delay:700ms">
           Con resultados acordados antes de empezar. Inteligenze es una consultora de IA que diseña agentes y software a medida, automatiza procesos y refuerza tu ciberseguridad. Definimos contigo qué se entrega, cuándo y a qué costo.
         </p>
-        <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+        <div class="enter mt-9 flex flex-col gap-3 sm:flex-row" style="--delay:850ms">
           <a href="/contacto/" class="btn btn-primary">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>
           <a href="#servicios" class="btn btn-ghost">Conoce los servicios</a>
         </div>
         <ul class="mt-12 grid gap-3 text-[15px] text-mist sm:grid-cols-3 sm:gap-6" aria-label="Respaldo">
           {
-            proof.map((p) => (
-              <li class="flex gap-3 border-l border-cyan/40 pl-4">{p}</li>
+            proof.map((p, i) => (
+              <li class="enter flex gap-3 border-l border-cyan/40 pl-4" style={`--delay:${1000 + i * 120}ms`}>{p}</li>
             ))
           }
         </ul>
@@ -80,14 +80,14 @@ const description =
         <div class="glass absolute -bottom-24 right-0 w-[220px] p-5 sm:-right-6 sm:w-[250px]">
           <p class="font-mono text-[12px] text-muted">Estado del ciclo</p>
           <ul class="mt-3 grid gap-2.5 text-[14px]">
-            <li class="flex items-center gap-3 text-mist"><span class="flex size-5 items-center justify-center rounded-full bg-cyan text-[11px] text-ink">✓</span>Diagnóstico</li>
-            <li class="flex items-center gap-3 text-mist"><span class="flex size-5 items-center justify-center rounded-full bg-cyan text-[11px] text-ink">✓</span>Acuerdo</li>
-            <li class="flex items-center gap-3 text-white"><span class="size-5 rounded-full border-2 border-cyan shadow-[0_0_12px_rgb(116_255_246/0.8)]"></span>Construcción</li>
+            <li class="flex items-center gap-3 text-mist"><span class="tick flex size-5 items-center justify-center rounded-full bg-cyan text-[11px] text-ink" style="--delay:1400ms">✓</span>Diagnóstico</li>
+            <li class="flex items-center gap-3 text-mist"><span class="tick flex size-5 items-center justify-center rounded-full bg-cyan text-[11px] text-ink" style="--delay:1750ms">✓</span>Acuerdo</li>
+            <li class="flex items-center gap-3 text-white"><span class="tick size-5 rounded-full border-2 border-cyan shadow-[0_0_12px_rgb(116_255_246/0.8)]" style="--delay:2100ms"></span>Construcción</li>
             <li class="flex items-center gap-3 text-muted"><span class="size-5 rounded-full border border-white/20"></span>Operación y mejora</li>
           </ul>
         </div>
 
-        <div class="orb-fallback absolute -bottom-20 left-2 rounded-full shadow-[0_0_90px_rgb(116_255_246/0.45)] sm:-left-8">
+        <div class="orb-fallback float absolute -bottom-20 left-2 rounded-full shadow-[0_0_90px_rgb(116_255_246/0.45)] sm:-left-8">
           <FluidOrb client:idle size={132} color="#107d78" />
         </div>
       </div>
@@ -104,7 +104,7 @@ const description =
             promise.map((p, i) => (
               <div class="glass p-7">
                 <div class="flex items-center justify-between">
-                  <span class="flex size-12 items-center justify-center rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan">
+                  <span class="flex size-12 items-center justify-center hop rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan">
                     <Icon name={(['scope', 'calendar', 'price'] as const)[i]} class="size-6" />
                   </span>
                   <span class="font-mono text-sm text-muted">0{i + 1}</span>
@@ -116,7 +116,7 @@ const description =
           }
         </div>
         <!-- Los tres acuerdos convergen en un solo documento -->
-        <svg class="hidden h-16 w-full text-cyan md:block" viewBox="0 0 600 64" preserveAspectRatio="none" fill="none" aria-hidden="true">
+        <svg data-reveal class="hidden h-16 w-full text-cyan md:block" viewBox="0 0 600 64" preserveAspectRatio="none" fill="none" aria-hidden="true">
           <path d="M100 0v24h400V0M300 24v40" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.2" vector-effect="non-scaling-stroke"></path>
         </svg>
         <div class="mt-6 flex justify-center md:mt-0">
@@ -174,10 +174,10 @@ const description =
                 <li>
                   <p class="flex items-center gap-2 text-5xl font-medium tracking-tight">
                     <Icon name={r.dir === 'up' ? 'arrowUp' : 'arrowDown'} class="size-7 text-cyan" />
-                    {r.value}
+                    <span data-countup>{r.value}</span>
                   </p>
                   <div class="mt-4 h-1.5 rounded-full bg-white/10">
-                    <div class="h-1.5 rounded-full bg-gradient-to-r from-cyan-deep to-cyan" style={`width:${r.bar}%`} />
+                    <div class="bar-grow h-1.5 rounded-full bg-gradient-to-r from-cyan-deep to-cyan" style={`width:${r.bar}%`} />
                   </div>
                   <p class="mt-3 text-white">{r.label}</p>
                   <a href={`/casos/${r.slug}/`} class="mt-1 inline-block text-[14px] text-muted hover:text-cyan">{r.source} →</a>
@@ -199,7 +199,7 @@ const description =
           services.map((s, i) => (
             <article class="glass group relative flex flex-col p-7 transition-colors hover:border-cyan/40">
               <div class="flex items-center justify-between">
-                <span class="flex size-14 items-center justify-center rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan">
+                <span class="flex size-14 items-center justify-center hop rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan">
                   <Icon name={s.icon} class="size-7" />
                 </span>
                 <span class="font-mono text-sm text-muted">0{i + 1}</span>
@@ -232,7 +232,7 @@ const description =
         {
           sectors.map((s) => (
             <a href={`/sectores/${s.slug}/`} class="glass group block p-7 transition-colors hover:border-cyan/40">
-              <span class="flex size-12 items-center justify-center rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan">
+              <span class="flex size-12 items-center justify-center hop rounded-2xl border border-cyan/30 bg-cyan/10 text-cyan">
                 <Icon name={s.icon} class="size-6" />
               </span>
               <h3 class="mt-6 text-2xl font-medium tracking-tight">{s.name}</h3>
