@@ -5,12 +5,13 @@ import Steps from '@/components/Steps.astro'
 import CaseCard from '@/components/CaseCard.astro'
 import Faq from '@/components/Faq.astro'
 import ContactForm from '@/components/ContactForm.astro'
-import FluidOrb from '@/components/ui/fluid-orb'
+import FluidOrb from '@/components/FluidOrb.astro'
 import Icon from '@/components/Icon.astro'
+import FounderPhoto from '@/components/FounderPhoto.astro'
 import { homeFaqs, method, proof, promise, site } from '@/data/site'
 import { services } from '@/data/services'
 import { sectors } from '@/data/sectors'
-import { featuredCases } from '@/data/cases'
+import { aiCases } from '@/data/cases'
 import { faqPage } from '@/lib/schema'
 
 // Resultados medidos de los casos; bar = largo relativo de la barra (escala visual)
@@ -57,27 +58,28 @@ const description =
         </ul>
       </div>
 
-      <!-- Visual: the agreement of a cycle, as code, with the orb as the agent's core -->
-      <div class="relative mx-auto mb-16 w-full max-w-[560px] lg:mx-0 lg:mb-0" aria-hidden="true">
-        <div class="glass overflow-hidden">
-          <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
-            <div class="flex gap-2">
-              <span class="size-3 rounded-full bg-[#ff5f57]"></span>
-              <span class="size-3 rounded-full bg-[#febc2e]"></span>
-              <span class="size-3 rounded-full bg-[#28c840]"></span>
+      <!-- Visual: el orbe es el núcleo del agente; alrededor, los tres acuerdos y el estado del ciclo -->
+      <div class="relative mx-auto w-full max-w-[520px] lg:mx-0 lg:justify-self-end" aria-hidden="true">
+        <div class="relative mx-auto aspect-square w-full max-w-[460px]">
+          <div class="absolute inset-[6%] rounded-full border border-dashed border-cyan/25"></div>
+          <div class="absolute inset-[20%] rounded-full border border-white/[0.06]"></div>
+          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div class="orb-fallback float rounded-full shadow-[0_0_140px_rgb(116_255_246/0.45)]">
+              <FluidOrb size={220} color="#107d78" />
             </div>
-            <span class="font-mono text-[12px] text-muted">acuerdo-ciclo-01.ts</span>
           </div>
-          <pre class="overflow-hidden px-5 py-6 font-mono text-[13px] leading-7 sm:text-[14px]"><code><span class="text-[#c792ea]">const</span> <span class="text-white">ciclo</span> = {'{'}
-  <span class="text-mist">alcance</span>: <span class="text-cyan">"Agente de atención en WhatsApp"</span>,
-  <span class="text-mist">criterios</span>: [<span class="text-cyan">"24/7"</span>, <span class="text-cyan">"escala a una persona"</span>],
-  <span class="text-mist">fecha</span>: <span class="text-cyan">"acordada antes de empezar"</span>,
-  <span class="text-mist">precio</span>: <span class="text-cyan">"fijo por ciclo"</span>,
-  <span class="text-mist">aprueba</span>: <span class="text-cyan">"tu equipo"</span>,
-{'}'}</code></pre>
+          <span class="orbit-chip absolute left-0 top-[12%] flex items-center gap-2.5 rounded-full border border-white/12 bg-ink-2/85 px-4 py-2.5 text-[14px] shadow-[0_12px_30px_rgb(0_0_0/0.35)] backdrop-blur-xl" style="--delay:900ms;--fdelay:1.8s">
+            <Icon name="scope" class="size-5 text-cyan" />Alcance acordado
+          </span>
+          <span class="orbit-chip absolute right-0 top-[38%] flex items-center gap-2.5 rounded-full border border-white/12 bg-ink-2/85 px-4 py-2.5 text-[14px] shadow-[0_12px_30px_rgb(0_0_0/0.35)] backdrop-blur-xl" style="--delay:1050ms;--fdelay:2.6s">
+            <Icon name="calendar" class="size-5 text-cyan" />Fecha definida
+          </span>
+          <span class="orbit-chip absolute bottom-[14%] left-[4%] flex items-center gap-2.5 rounded-full border border-white/12 bg-ink-2/85 px-4 py-2.5 text-[14px] shadow-[0_12px_30px_rgb(0_0_0/0.35)] backdrop-blur-xl" style="--delay:1200ms;--fdelay:3.4s">
+            <Icon name="price" class="size-5 text-cyan" />Precio fijo por ciclo
+          </span>
         </div>
 
-        <div class="glass absolute -bottom-24 right-0 w-[220px] p-5 sm:-right-6 sm:w-[250px]">
+        <div class="glass mt-6 w-full p-5 sm:absolute sm:-bottom-6 sm:right-0 sm:mt-0 sm:w-[250px]">
           <p class="font-mono text-[12px] text-muted">Estado del ciclo</p>
           <ul class="mt-3 grid gap-2.5 text-[14px]">
             <li class="flex items-center gap-3 text-mist"><span class="tick flex size-5 items-center justify-center rounded-full bg-cyan text-[11px] text-ink" style="--delay:1400ms">✓</span>Diagnóstico</li>
@@ -85,10 +87,6 @@ const description =
             <li class="flex items-center gap-3 text-white"><span class="tick size-5 rounded-full border-2 border-cyan shadow-[0_0_12px_rgb(116_255_246/0.8)]" style="--delay:2100ms"></span>Construcción</li>
             <li class="flex items-center gap-3 text-muted"><span class="size-5 rounded-full border border-white/20"></span>Operación y mejora</li>
           </ul>
-        </div>
-
-        <div class="orb-fallback float absolute -bottom-20 left-2 rounded-full shadow-[0_0_90px_rgb(116_255_246/0.45)] sm:-left-8">
-          <FluidOrb client:idle size={132} color="#107d78" />
         </div>
       </div>
     </div>
@@ -149,13 +147,13 @@ const description =
         <SectionHeading
           id="casos"
           eyebrow="Casos"
-          title="Experiencia que ya está en producción."
-          lead="Agentes de IA, automatizaciones y productos financieros que lideró nuestro fundador, con sus resultados medidos."
+          title="IA que ya construimos."
+          lead="Agentes y automatizaciones con IA diseñados y construidos por el equipo fundador de Inteligenze."
         />
         <a href="/casos/" class="btn btn-ghost shrink-0">Ver todos los casos <span class="arrow" aria-hidden="true">→</span></a>
       </div>
       <div class="mt-12 grid gap-4 md:grid-cols-3">
-        {featuredCases.map((c) => <CaseCard item={c} />)}
+        {aiCases.map((c) => <CaseCard item={c} />)}
       </div>
     </div>
   </section>
@@ -166,8 +164,8 @@ const description =
       <div class="glass relative overflow-hidden p-7 sm:p-10">
         <div class="glow-bottom" aria-hidden="true"></div>
         <div class="relative">
-          <p class="eyebrow">Resultados medidos</p>
-          <h2 id="resultados" class="mt-4 max-w-2xl text-2xl font-medium tracking-tight sm:text-3xl">Lo que cambió en cada producto, antes y después.</h2>
+          <p class="eyebrow">Trayectoria · resultados medidos</p>
+          <h2 id="resultados" class="mt-4 max-w-2xl text-2xl font-medium tracking-tight sm:text-3xl">Antes de la IA, más de 12 años mejorando productos de banca y pagos.</h2>
           <ul class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {
               results.map((r) => (
@@ -254,6 +252,7 @@ const description =
         <div class="glow-bottom" aria-hidden="true"></div>
         <div class="relative grid gap-10 lg:grid-cols-[1fr_1.3fr]">
           <div>
+            <FounderPhoto class="mb-8 size-28" />
             <p class="eyebrow mb-5">Quién está detrás</p>
             <h2 id="quien" class="sheen text-[clamp(30px,4vw,48px)]">Liderado por quien ha construido tecnología corporativa durante más de 12 años.</h2>
           </div>

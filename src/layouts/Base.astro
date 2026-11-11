@@ -15,6 +15,8 @@ interface Props {
   breadcrumbs?: { name: string; path: string }[]
   schema?: object[]
   noindex?: boolean
+  /** Animaciones sobrias, sin rebotes ni giros (páginas de ciberseguridad y finanzas) */
+  calm?: boolean
 }
 
 const {
@@ -26,6 +28,7 @@ const {
   breadcrumbs,
   schema = [],
   noindex = false,
+  calm = false,
 } = Astro.props
 
 const path = Astro.url.pathname
@@ -44,7 +47,7 @@ const ld = graph(
 ---
 
 <!doctype html>
-<html lang="es-PE">
+<html lang="es-PE" data-calm={calm ? "" : undefined}>
   <head>
     <meta charset="utf-8" />
     <script is:inline>document.documentElement.classList.add('js')</script>

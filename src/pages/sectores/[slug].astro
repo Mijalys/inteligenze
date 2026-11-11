@@ -21,7 +21,7 @@ const crumbs = [
 ]
 ---
 
-<Base title={sector.title} description={sector.metaDescription} breadcrumbs={crumbs}>
+<Base calm={sector.slug === 'finanzas'} title={sector.title} description={sector.metaDescription} breadcrumbs={crumbs}>
   <PageHero eyebrow={`Sector ${sector.name.toLowerCase()}`} title={sector.headline} crumbs={crumbs}>
     <div class="mt-9 flex flex-col gap-3 sm:flex-row">
       <a href="/contacto/" class="btn btn-primary">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>

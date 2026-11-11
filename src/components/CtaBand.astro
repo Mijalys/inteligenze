@@ -1,5 +1,5 @@
 ---
-import FluidOrb from '@/components/ui/fluid-orb'
+import FluidOrb from '@/components/FluidOrb.astro'
 interface Props {
   title: string
   body?: string
@@ -29,7 +29,7 @@ const {
         </div>
         <div class="hidden justify-self-center lg:block" aria-hidden="true">
           <div class="orb-fallback float rounded-full shadow-[0_0_120px_rgb(116_255_246/0.35)]">
-            <FluidOrb client:visible size={220} color="#107d78" />
+            <FluidOrb size={220} color="#107d78" />
           </div>
         </div>
       </div>

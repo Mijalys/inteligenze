@@ -1,6 +1,6 @@
 # Inteligenze · web
 
-Sitio de [inteligenze.com](https://inteligenze.com), hecho con Astro 7, Tailwind CSS 4 y React (solo para el orbe animado). Se publica en Vercel.
+Sitio de [inteligenze.com](https://inteligenze.com), hecho con Astro 7 y Tailwind CSS 4, sin frameworks de JavaScript. Se publica en Vercel.
 
 ## Empezar
 
@@ -22,11 +22,17 @@ Todo el texto vive en `src/data/`, separado del diseño:
 | `src/data/site.ts` | Datos de la empresa, menú, propuesta, método y preguntas frecuentes del Inicio |
 | `src/data/services.ts` | Las tres páginas de servicio |
 | `src/data/sectors.ts` | Finanzas, Automotriz y Logística |
-| `src/data/cases.ts` | Los casos, tomados del portafolio de Mijalys Silva |
+| `src/data/cases.ts` | Los casos: `kind: 'ia'` aparece como caso de IA y `'producto'` como trayectoria |
 
 Los campos de `site.ts` que valen `null` (correo, WhatsApp, calendario, LinkedIn de la empresa, razón social y RUC) no se publican. Al completarlos aparecen solos en Contacto, el pie de página y los datos estructurados.
 
 `npm run build` falla si una página contiene un dato por confirmar del documento de copy, como `[confirmar …]`, `[Nº]` o `[correo]`.
+
+Para mostrar la foto de Mijalys Silva en el Inicio y en Nosotros, guárdala como `src/assets/founder.jpg` (cuadrada, de al menos 800 px). Sin ese archivo no se muestra nada.
+
+## Animaciones
+
+Los bloques entran al aparecer en pantalla (`src/layouts/Base.astro` y `src/styles/global.css`). Las páginas de Ciberseguridad y Finanzas usan un modo sobrio (`<Base calm>`). Nada se anima si la persona pidió menos movimiento en su sistema.
 
 ## SEO y GEO
 
@@ -34,7 +40,7 @@ Los campos de `site.ts` que valen `null` (correo, WhatsApp, calendario, LinkedIn
 - Datos estructurados JSON-LD (`src/lib/schema.ts`): ProfessionalService, Person, WebSite, WebPage, BreadcrumbList, Service, FAQPage, ItemList y CreativeWork.
 - `sitemap-index.xml` automático y `robots.txt` abierto a buscadores y a los rastreadores de IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended y otros).
 - `/llms.txt` y `/llms-full.txt`: resumen de la empresa en Markdown para asistentes de IA, generado con los mismos datos del sitio (`src/lib/llms.ts`).
-- Sitio estático: solo cargan JavaScript los diagnósticos, el formulario, los filtros de casos y el orbe.
+- Sitio estático: solo cargan JavaScript los diagnósticos, el formulario, el menú, las animaciones y el orbe.
 
 ## Formulario y diagnósticos
 
@@ -54,4 +60,4 @@ Sin estas variables el formulario responde con un error y la persona ve el mensa
 
 ## Créditos
 
-El orbe animado es [Fluid Orb de Rare UI](https://rareui.com), instalado con `npx shadcn@latest add swamimalode07/rare-ui/fluid-orb`. Su licencia exige mantener el aviso de copyright en `src/components/ui/fluid-orb.tsx` y el enlace a rareui.com en el pie de página.
+El orbe animado es [Fluid Orb de Rare UI](https://rareui.com), adaptado a un componente de Astro sin React (`src/components/FluidOrb.astro`). Solo se dibuja cuando está en pantalla. Su licencia exige mantener el aviso de copyright en ese archivo y el enlace a rareui.com en el pie de página.

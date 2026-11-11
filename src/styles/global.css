@@ -288,6 +288,23 @@
   /* Las barras de resultados crecen al entrar */
   .js .bar-grow { transform-origin: left; transform: scaleX(0); transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s; }
   .js .is-in .bar-grow { transform: scaleX(1); }
+  /* Los acuerdos alrededor del orbe entran y luego flotan */
+  .js .orbit-chip {
+    animation:
+      enter-up 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) var(--delay, 0ms) both,
+      float 6s ease-in-out var(--fdelay, 2s) infinite;
+  }
+  /* Modo sobrio: solo aparecer suave, sin rebotes, giros ni saltos */
+  [data-calm].js main :is(.glass, [data-reveal]):not(.is-in) { transform: translateY(16px); }
+  [data-calm].js main :is(.glass, [data-reveal]) {
+    transition: opacity 0.5s ease var(--delay, 0ms), transform 0.6s ease var(--delay, 0ms), border-color 0.2s ease;
+  }
+  [data-calm].js .word { animation-name: calm-in; animation-timing-function: ease-out; animation-duration: 0.6s; }
+  @keyframes calm-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+  [data-calm] :is(.glass, .group):hover .hop { animation: none; }
   /* El orbe flota */
   .float { animation: float 6s ease-in-out infinite; }
   @keyframes float {

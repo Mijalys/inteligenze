@@ -1,0 +1,27 @@
+---
+// Foto de Mijalys Silva. Para mostrarla, guarda la foto como src/assets/founder.jpg
+// (o .png / .webp), cuadrada y de al menos 800 px. Si no existe, no se muestra nada.
+import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import { founder } from '@/data/site'
+
+interface Props {
+  class?: string
+}
+const { class: className = 'size-28' } = Astro.props
+const found = Object.values(
+  import.meta.glob<{ default: ImageMetadata }>('/src/assets/founder.{jpg,jpeg,png,webp}', { eager: true }),
+)[0]
+---
+
+{
+  found && (
+    <Image
+      src={found.default}
+      alt={`${founder.name}, ${founder.role}`}
+      width={400}
+      height={400}
+      class:list={['rounded-full border-2 border-cyan/40 object-cover shadow-[0_0_60px_rgb(116_255_246/0.25)]', className]}
+    />
+  )
+}

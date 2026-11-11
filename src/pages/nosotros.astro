@@ -3,6 +3,7 @@ import Base from '@/layouts/Base.astro'
 import PageHero from '@/components/PageHero.astro'
 import SectionHeading from '@/components/SectionHeading.astro'
 import CtaBand from '@/components/CtaBand.astro'
+import FounderPhoto from '@/components/FounderPhoto.astro'
 import { founder, site } from '@/data/site'
 
 const crumbs = [
@@ -52,7 +53,7 @@ const career = [
 
   <section class="section pt-0" aria-labelledby="trayectoria">
     <div class="wrap grid gap-10 lg:grid-cols-[1fr_1.4fr]">
-      <SectionHeading id="trayectoria" eyebrow="Nuestra trayectoria" title="Experiencia que ya está en producción." />
+      <SectionHeading id="trayectoria" eyebrow="Nuestra trayectoria" title="Más de 12 años entre banca, pagos e IA." />
       <ul class="grid gap-3">
         {track.map((t) => <li class="glass flex gap-4 p-5 text-mist"><span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-cyan" aria-hidden="true" />{t}</li>)}
       </ul>
@@ -65,6 +66,7 @@ const career = [
         <div class="glow-bottom" aria-hidden="true"></div>
         <div class="relative grid gap-12 lg:grid-cols-[1fr_1.2fr]">
           <div>
+            <FounderPhoto class="mb-8 size-36" />
             <p class="eyebrow mb-5">Liderazgo</p>
             <h2 id="liderazgo" class="sheen text-[clamp(32px,4vw,52px)]">{founder.name}</h2>
             <p class="mt-2 text-lg text-mist">{founder.role}</p>

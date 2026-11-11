@@ -75,7 +75,7 @@ export const sectors: Sector[] = [
       'Automatización de procesos operativos.',
       'Integración de datos.',
     ],
-    relatedCases: ['primax'],
+    relatedCases: [],
   },
 ]
 
