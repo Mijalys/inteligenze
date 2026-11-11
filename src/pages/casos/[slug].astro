@@ -1,0 +1,124 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import CtaBand from '@/components/CtaBand.astro'
+import { cases, serviceLabels, type Case } from '@/data/cases'
+import { caseSchema } from '@/lib/schema'
+
+export function getStaticPaths() {
+  return cases.map((c, i) => ({
+    params: { slug: c.slug },
+    props: { item: c, next: cases[(i + 1) % cases.length] },
+  }))
+}
+
+const { item, next } = Astro.props as { item: Case; next: Case }
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Casos', path: '/casos/' },
+  { name: item.client, path: `/casos/${item.slug}/` },
+]
+const facts = [
+  { k: 'Rol', v: item.role },
+  { k: 'Periodo', v: item.period },
+  { k: 'Industria', v: item.industry },
+  { k: 'Ubicación', v: item.location },
+].filter((f) => f.v)
+---
+
+<Base
+  title={`${item.client}: ${item.title}`}
+  description={item.summary}
+  pageType="ItemPage"
+  breadcrumbs={crumbs}
+  schema={[caseSchema(item)]}
+>
+  <PageHero eyebrow={item.client} title={item.title} lead={item.summary} crumbs={crumbs}>
+    <dl class="mt-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-6 lg:grid-cols-4">
+      {
+        facts.map((f) => (
+          <div>
+            <dt class="text-[12px] uppercase tracking-[0.08em] text-muted">{f.k}</dt>
+            <dd class="mt-2 text-lg">{f.v}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </PageHero>
+
+  <section class="pb-8" aria-label="Resultados">
+    <div class="wrap">
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          item.metrics.map((m) => (
+            <li class="glass p-6">
+              <p class="text-5xl font-medium tracking-tight">{m.value}</p>
+              <p class="mt-2 text-[15px] text-mist">{m.label}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Detalle del caso">
+    <div class="wrap grid gap-14 lg:grid-cols-[1fr_320px]">
+      <div class="prose-ink max-w-3xl">
+        <h2 class="!mt-0">Contexto</h2>
+        <p>{item.context}</p>
+        {
+          item.howItWorks && (
+            <>
+              <h2>Cómo funciona</h2>
+              <ol class="grid list-decimal gap-2 pl-6 text-mist marker:text-cyan">
+                {item.howItWorks.map((d) => <li>{d}</li>)}
+              </ol>
+            </>
+          )
+        }
+        <h2>Qué se hizo</h2>
+        <ul>{item.did.map((d) => <li>{d}</li>)}</ul>
+        {
+          item.results && (
+            <>
+              <h2>Resultado</h2>
+              <ul>{item.results.map((d) => <li>{d}</li>)}</ul>
+            </>
+          )
+        }
+        <p class="mt-10 text-[15px] text-muted">
+          Caso del portafolio de Mijalys Silva, fundador de Inteligenze. Rol en el proyecto: {item.role}.{' '}
+          <a href={item.source} rel="noopener">Ver el caso original</a>.
+        </p>
+      </div>
+
+      <aside class="grid content-start gap-8">
+        <div>
+          <h2 class="eyebrow mb-4">Servicio</h2>
+          <p class="text-mist">{item.services.map((s) => serviceLabels[s]).join(' · ')}</p>
+        </div>
+        <div>
+          <h2 class="eyebrow mb-4">Entregables</h2>
+          <ul class="grid gap-2 text-[15px] text-mist">{item.deliverables.map((d) => <li>{d}</li>)}</ul>
+        </div>
+        <div>
+          <h2 class="eyebrow mb-4">Tecnología</h2>
+          <ul class="flex flex-wrap gap-2">
+            {item.tech.map((t) => <li class="rounded-full border border-white/12 px-3 py-1 text-[13px] text-mist">{t}</li>)}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <nav class="wrap" aria-label="Siguiente caso">
+    <a href={`/casos/${next.slug}/`} class="group block border-t border-white/10 pt-8">
+      <span class="eyebrow">Siguiente caso</span>
+      <span class="mt-4 block text-[clamp(26px,4vw,48px)] font-medium tracking-tight transition-colors group-hover:text-cyan">
+        {next.client}: {next.title} <span aria-hidden="true">→</span>
+      </span>
+    </a>
+  </nav>
+
+  <CtaBand title="¿Tu reto se parece a este?" body="Cuéntanoslo y te proponemos el plan del primer ciclo." primary={{ label: 'Hablemos', href: '/contacto/' }} />
+</Base>

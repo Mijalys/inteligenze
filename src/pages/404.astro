@@ -1,0 +1,14 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+---
+
+<Base title="Página no encontrada" description="La página que buscas no existe o cambió de dirección." noindex>
+  <PageHero eyebrow="Error 404" title="Esta página no existe." lead="Puede que haya cambiado de dirección. Estas te pueden servir:">
+    <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+      <a href="/" class="btn btn-primary">Ir al inicio</a>
+      <a href="/servicios/" class="btn btn-ghost">Servicios</a>
+      <a href="/contacto/" class="btn btn-ghost">Contacto</a>
+    </div>
+  </PageHero>
+</Base>

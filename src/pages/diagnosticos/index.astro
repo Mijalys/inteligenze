@@ -1,0 +1,84 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import CtaBand from '@/components/CtaBand.astro'
+import { site } from '@/data/site'
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Diagnósticos gratuitos', path: '/diagnosticos/' },
+]
+const tools = [
+  {
+    name: 'Madurez en IA',
+    href: '/diagnosticos/madurez-ia/',
+    measures: 'Qué tan preparada está tu empresa para adoptar IA: datos, procesos, equipo y gobierno.',
+    gets: 'Puntaje por área y recomendaciones de por dónde empezar.',
+    cta: 'Hacer el test',
+    time: '3 minutos',
+  },
+  {
+    name: 'Autoevaluación de ciberseguridad',
+    href: '/diagnosticos/ciberseguridad/',
+    measures: 'Tu exposición frente a phishing, accesos y respuesta a incidentes.',
+    gets: 'Nivel de riesgo y las acciones más urgentes.',
+    cta: 'Evaluar mi riesgo',
+    time: '3 minutos',
+  },
+  {
+    name: 'Calculadora de ahorro por automatización',
+    href: '/diagnosticos/calculadora-ahorro/',
+    measures: 'Horas y costo que hoy consume un proceso manual.',
+    gets: 'Ahorro estimado mensual y anual.',
+    cta: 'Calcular mi ahorro',
+    time: '1 minuto',
+  },
+]
+---
+
+<Base
+  title="Diagnósticos gratuitos de IA, ciberseguridad y ahorro"
+  description="Tres herramientas gratuitas para medir tu madurez en IA, tu exposición en ciberseguridad y el ahorro posible con automatización. Resultado inmediato."
+  pageType="CollectionPage"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Diagnósticos gratuitos"
+    title="Descubre en minutos dónde está tu empresa y por dónde empezar."
+    lead="Tres herramientas gratuitas para medir tu madurez en IA, tu exposición en ciberseguridad y el ahorro posible con automatización. Recibes un resultado inmediato y, si quieres, una conversación con nuestro equipo."
+    crumbs={crumbs}
+  />
+
+  <section class="section pt-0" aria-label="Herramientas">
+    <div class="wrap grid gap-4 lg:grid-cols-3">
+      {
+        tools.map((t) => (
+          <article class="glass group relative flex flex-col p-7 hover:border-cyan/40">
+            <p class="font-mono text-[13px] text-cyan">{t.time}</p>
+            <h2 class="mt-6 text-2xl font-medium tracking-tight">
+              <a href={t.href} class="after:absolute after:inset-0 after:rounded-[24px]">{t.name}</a>
+            </h2>
+            <dl class="mt-5 grid gap-4 text-[15px]">
+              <div>
+                <dt class="text-muted">Qué mide</dt>
+                <dd class="mt-1 text-mist">{t.measures}</dd>
+              </div>
+              <div>
+                <dt class="text-muted">Qué recibes</dt>
+                <dd class="mt-1 text-mist">{t.gets}</dd>
+              </div>
+            </dl>
+            <span class="btn btn-ghost btn-sm mt-auto self-start">
+              {t.cta} <span class="arrow" aria-hidden="true">→</span>
+            </span>
+          </article>
+        ))
+      }
+    </div>
+    <p class="wrap mt-8 text-[15px] text-muted">
+      Antes de mostrar el resultado completo te pedimos nombre, correo corporativo, empresa y cargo. Puedes revisarlo luego con un especialista en una conversación de {site.meetingMinutes} minutos.
+    </p>
+  </section>
+
+  <CtaBand title="¿Prefieres hablar directamente?" primary={{ label: 'Agenda un diagnóstico', href: '/contacto/' }} />
+</Base>

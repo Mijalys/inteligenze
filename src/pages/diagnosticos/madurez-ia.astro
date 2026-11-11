@@ -1,0 +1,161 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import DiagnosticGate from '@/components/DiagnosticGate.astro'
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Diagnósticos gratuitos', path: '/diagnosticos/' },
+  { name: 'Madurez en IA', path: '/diagnosticos/madurez-ia/' },
+]
+
+const options = ['No', 'En parte', 'Sí, en algunas áreas', 'Sí, de forma sistemática']
+const areas = [
+  {
+    id: 'datos',
+    name: 'Datos',
+    questions: [
+      '¿La información clave de tu operación está en sistemas digitales y no en papel o en la memoria de las personas?',
+      '¿Puedes reunir los datos de un proceso sin copiarlos a mano entre sistemas o planillas?',
+    ],
+    tip: 'Empieza por ordenar los datos de un solo proceso: dónde viven, quién los actualiza y cómo se consultan. Sin eso, ningún agente da resultados estables.',
+  },
+  {
+    id: 'procesos',
+    name: 'Procesos',
+    questions: [
+      '¿Tus procesos principales están documentados con sus pasos y responsables?',
+      '¿Sabes cuántas horas al mes consumen las tareas repetitivas de tus equipos?',
+    ],
+    tip: 'Elige el proceso que más horas consume o más errores genera y mide su línea base. Es el mejor primer caso para automatizar.',
+  },
+  {
+    id: 'equipo',
+    name: 'Equipo',
+    questions: [
+      '¿Tus equipos ya usan herramientas de IA en su trabajo diario?',
+      '¿Hay alguien con tiempo asignado para liderar iniciativas de IA?',
+    ],
+    tip: 'Nombra a un responsable con tiempo real y forma a los líderes de área en casos concretos de su trabajo, no en teoría.',
+  },
+  {
+    id: 'gobierno',
+    name: 'Gobierno',
+    questions: [
+      '¿Tienes reglas sobre qué datos se pueden usar con herramientas de IA?',
+      '¿Mides el resultado de las iniciativas de tecnología con indicadores acordados?',
+    ],
+    tip: 'Define una política simple de uso de IA y acuerda un indicador de éxito para cada iniciativa antes de empezarla.',
+  },
+]
+---
+
+<Base
+  title="Test de madurez en IA para empresas"
+  description="Mide en 3 minutos qué tan preparada está tu empresa para adoptar IA en datos, procesos, equipo y gobierno. Puntaje por área y recomendaciones gratuitas."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Diagnóstico gratuito"
+    title="¿Qué tan preparada está tu empresa para la IA?"
+    lead="Ocho preguntas sobre datos, procesos, equipo y gobierno. Recibes un puntaje por área y recomendaciones de por dónde empezar."
+    crumbs={crumbs}
+  />
+
+  <section class="section pt-0" data-tool-root>
+    <div class="wrap grid gap-8 lg:grid-cols-[1.4fr_1fr]">
+      <form class="grid gap-4" data-quiz>
+        {
+          areas.map((a) =>
+            a.questions.map((q, qi) => (
+              <fieldset class="glass p-6" data-area={a.id}>
+                <legend class="sr-only">{a.name}</legend>
+                <p class="font-mono text-[12px] uppercase tracking-[0.08em] text-cyan">{a.name}</p>
+                <p class="mt-3 text-lg">{q}</p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {options.map((o, oi) => (
+                    <label class="cursor-pointer">
+                      <input class="peer sr-only" type="radio" name={`${a.id}-${qi}`} value={oi} required />
+                      <span class="chip peer-checked:border-cyan peer-checked:bg-cyan/10 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-cyan">
+                        {o}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )),
+          )
+        }
+        <button type="submit" class="btn btn-primary justify-self-start">Ver mi resultado <span class="arrow" aria-hidden="true">→</span></button>
+      </form>
+
+      <div class="grid content-start gap-4 lg:sticky lg:top-8">
+        <div class="glass p-6 sm:p-8" data-result aria-live="polite">
+          <p class="eyebrow">Tu resultado</p>
+          <p class="mt-4 text-mist" data-empty>Responde las ocho preguntas para ver tu puntaje.</p>
+          <div class="hidden" data-filled>
+            <p class="mt-4 text-6xl font-medium tracking-tight"><span data-score>0</span><span class="text-2xl text-muted">/100</span></p>
+            <p class="mt-2 text-xl" data-level></p>
+            <ul class="mt-6 grid gap-3" data-areas></ul>
+          </div>
+        </div>
+        <div class="glass hidden p-6 sm:p-8" data-detail>
+          <h3 class="text-xl font-medium">Por dónde empezar</h3>
+          <ol class="mt-4 grid gap-4 text-mist" data-tips></ol>
+        </div>
+        <DiagnosticGate tool="madurez-ia" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script define:vars={{ areas }} is:inline>
+  window.__areas = areas
+</script>
+
+<script>
+  import { openGate } from '@/scripts/gate'
+  type Area = { id: string; name: string; questions: string[]; tip: string }
+  const areas = (window as unknown as { __areas: Area[] }).__areas
+  const root = document.querySelector<HTMLElement>('[data-tool-root]')!
+  const form = root.querySelector<HTMLFormElement>('[data-quiz]')!
+  const levels = [
+    [35, 'Inicial: la IA todavía no tiene dónde apoyarse.'],
+    [60, 'En desarrollo: hay bases, falta foco.'],
+    [80, 'Avanzado: listo para escalar casos.'],
+    [101, 'Líder: la IA ya es parte de la operación.'],
+  ] as const
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const data = new FormData(form)
+    const perArea = areas.map((a) => {
+      const sum = a.questions.reduce((acc, _q, i) => acc + Number(data.get(`${a.id}-${i}`) ?? 0), 0)
+      return { ...a, score: Math.round((sum / (a.questions.length * 3)) * 100) }
+    })
+    const total = Math.round(perArea.reduce((acc, a) => acc + a.score, 0) / perArea.length)
+    const level = levels.find(([max]) => total < max)![1]
+
+    root.querySelector('[data-empty]')!.classList.add('hidden')
+    root.querySelector('[data-filled]')!.classList.remove('hidden')
+    root.querySelector('[data-score]')!.textContent = String(total)
+    root.querySelector('[data-level]')!.textContent = level
+    root.querySelector('[data-areas]')!.innerHTML = perArea
+      .map(
+        (a) => `<li>
+          <div class="flex justify-between text-[15px]"><span>${a.name}</span><span class="text-mist">${a.score}</span></div>
+          <div class="mt-1.5 h-2 rounded-full bg-white/10"><div class="h-2 rounded-full bg-cyan" style="width:${Math.max(a.score, 3)}%"></div></div>
+        </li>`,
+      )
+      .join('')
+
+    const weakest = [...perArea].sort((a, b) => a.score - b.score).slice(0, 3)
+    const summary = `Puntaje ${total}/100 (${level}) · ${perArea.map((a) => `${a.name} ${a.score}`).join(', ')}`
+    openGate(root, summary, () => {
+      root.querySelector('[data-tips]')!.innerHTML = weakest
+        .map((a) => `<li><strong class="font-medium text-white">${a.name}.</strong> ${a.tip}</li>`)
+        .join('')
+      root.querySelector('[data-detail]')!.classList.remove('hidden')
+    })
+  })
+</script>

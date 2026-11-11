@@ -1,0 +1,58 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import CtaBand from '@/components/CtaBand.astro'
+import Steps from '@/components/Steps.astro'
+import SectionHeading from '@/components/SectionHeading.astro'
+import { services } from '@/data/services'
+import { method } from '@/data/site'
+import { serviceSchema } from '@/lib/schema'
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Servicios', path: '/servicios/' },
+]
+---
+
+<Base
+  title="Servicios de IA para empresas"
+  description="Software y agentes de IA a medida, automatización de procesos con IA y ciberseguridad frente a phishing, con alcance, fecha y precio acordados."
+  pageType="CollectionPage"
+  breadcrumbs={crumbs}
+  schema={services.map(serviceSchema)}
+>
+  <PageHero
+    eyebrow="Servicios"
+    title="Tres formas de poner la IA a trabajar para ti."
+    lead="Construimos agentes y software a medida, automatizamos procesos y protegemos tu operación. En los tres casos acordamos alcance, fecha y precio antes de empezar."
+    crumbs={crumbs}
+  />
+
+  <section class="section pt-0" aria-label="Servicios">
+    <div class="wrap grid gap-4">
+      {
+        services.map((s, i) => (
+          <article class="glass group relative grid gap-6 p-7 transition-colors hover:border-cyan/40 sm:p-10 lg:grid-cols-[80px_1fr_1.2fr_auto] lg:items-center">
+            <span class="font-mono text-sm text-cyan">0{i + 1}</span>
+            <h2 class="text-3xl font-medium tracking-tight">
+              <a href={`/servicios/${s.slug}/`} class="after:absolute after:inset-0 after:rounded-[24px]">{s.name}</a>
+            </h2>
+            <p class="text-mist">{s.short}</p>
+            <span class="inline-flex items-center gap-2 font-medium text-cyan">
+              {s.cardCta} <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+            </span>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section pt-0" aria-labelledby="metodo">
+    <div class="wrap">
+      <SectionHeading id="metodo" eyebrow="Cómo trabajamos" title="Un método simple, en cuatro pasos." />
+      <div class="mt-12"><Steps steps={method} /></div>
+    </div>
+  </section>
+
+  <CtaBand title="¿No sabes por cuál empezar?" body="El diagnóstico inicial te dice dónde la IA da resultados primero, con el plan y el precio del primer ciclo." secondary={{ label: 'Diagnósticos gratuitos', href: '/diagnosticos/' }} />
+</Base>

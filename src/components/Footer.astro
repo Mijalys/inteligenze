@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets'
+import logo from '@/assets/logo-on-dark.png'
+import { nav, site } from '@/data/site'
+
+const diagnostics = [
+  { label: 'Madurez en IA', href: '/diagnosticos/madurez-ia/' },
+  { label: 'Autoevaluación de ciberseguridad', href: '/diagnosticos/ciberseguridad/' },
+  { label: 'Calculadora de ahorro por automatización', href: '/diagnosticos/calculadora-ahorro/' },
+]
+const legal = [
+  { label: 'Privacidad', href: '/privacidad/' },
+  { label: 'Términos', href: '/terminos/' },
+  { label: 'Seguridad de datos', href: '/seguridad-de-datos/' },
+]
+const year = new Date(site.lastUpdated).getFullYear()
+const owner = [site.legalName, site.ruc ? `RUC ${site.ruc}` : null].filter(Boolean).join(' · ')
+---
+
+<footer class="relative border-t border-white/10 bg-ink-2/60">
+  <div class="wrap grid gap-12 py-16 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
+    <div class="max-w-sm">
+      <Image src={logo} alt="Inteligenze" width={150} class="h-auto w-[150px]" />
+      <p class="mt-5 text-[15px] text-mist">
+        Inteligenze es una consultora de IA que construye, automatiza y protege con inteligencia artificial. Desde {site.city}, {site.countryName}.
+      </p>
+    </div>
+
+    <nav aria-label="Secciones">
+      <h2 class="eyebrow mb-4">Secciones</h2>
+      <ul class="grid gap-2.5 text-[15px] text-mist">
+        {nav.filter((n) => n.href !== '/diagnosticos/').map((n) => <li><a class="hover:text-white" href={n.href}>{n.label}</a></li>)}
+        <li><a class="hover:text-white" href="/contacto/">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-label="Diagnósticos gratuitos">
+      <h2 class="eyebrow mb-4">Diagnósticos gratuitos</h2>
+      <ul class="grid gap-2.5 text-[15px] text-mist">
+        {diagnostics.map((n) => <li><a class="hover:text-white" href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav aria-label="Legales">
+      <h2 class="eyebrow mb-4">Legales</h2>
+      <ul class="grid gap-2.5 text-[15px] text-mist">
+        {legal.map((n) => <li><a class="hover:text-white" href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+
+  <div class="wrap flex flex-col gap-3 border-t border-white/10 py-6 text-[13px] text-muted sm:flex-row sm:items-center sm:justify-between">
+    <p>© {year} Inteligenze{owner && ` · ${owner}`}</p>
+    <p>
+      Orbe animado de <a class="underline underline-offset-2 hover:text-white" href="https://rareui.com" rel="noopener">Rare UI</a>
+    </p>
+  </div>
+</footer>

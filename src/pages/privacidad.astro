@@ -1,0 +1,41 @@
+---
+import Legal from '@/layouts/Legal.astro'
+import { site } from '@/data/site'
+const owner = site.legalName ? `${site.legalName}${site.ruc ? ` (RUC ${site.ruc})` : ''}` : 'Inteligenze'
+---
+
+<Legal
+  title="Política de privacidad"
+  path="/privacidad/"
+  description="Qué datos recoge Inteligenze en sus formularios y diagnósticos, para qué los usa, cuánto tiempo los conserva y cómo ejercer tus derechos."
+>
+  <p>
+    {owner}, con domicilio en {site.city}, {site.countryName}, es responsable del tratamiento de los datos personales que nos entregas en este sitio. Tratamos tus datos según la Ley N.º 29733, Ley de Protección de Datos Personales, y su reglamento.
+  </p>
+
+  <h2>Qué datos recogemos</h2>
+  <ul>
+    <li>En el formulario de contacto: nombre, correo corporativo, empresa, cargo, servicio de interés y el reto que nos describes.</li>
+    <li>En los diagnósticos gratuitos: nombre, correo corporativo, empresa, cargo y las respuestas y el resultado del diagnóstico.</li>
+  </ul>
+
+  <h2>Para qué los usamos</h2>
+  <ul>
+    <li>Responder tu consulta y, si lo pides, agendar una conversación.</li>
+    <li>Enviarte el resultado de tu diagnóstico y una propuesta relacionada con él.</li>
+  </ul>
+  <p>No vendemos ni cedemos tus datos a terceros para fines comerciales.</p>
+
+  <h2>Con quién los compartimos</h2>
+  <p>
+    Usamos proveedores que nos ayudan a operar el sitio y el correo, como el alojamiento web y el servicio de envío de correos. Solo procesan tus datos para prestarnos ese servicio.
+  </p>
+
+  <h2>Cuánto tiempo los conservamos</h2>
+  <p>Conservamos tus datos mientras dure la relación comercial o hasta que pidas su eliminación.</p>
+
+  <h2>Tus derechos</h2>
+  <p>
+    Puedes pedir el acceso, la rectificación, la cancelación o la oposición al tratamiento de tus datos escribiéndonos desde la <a href="/contacto/">página de contacto</a>. Si no estás conforme con nuestra respuesta, puedes acudir a la Autoridad Nacional de Protección de Datos Personales.
+  </p>
+</Legal>

@@ -1,0 +1,126 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import DiagnosticGate from '@/components/DiagnosticGate.astro'
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Diagnósticos gratuitos', path: '/diagnosticos/' },
+  { name: 'Autoevaluación de ciberseguridad', path: '/diagnosticos/ciberseguridad/' },
+]
+
+const questions = [
+  { q: '¿Todas las cuentas de correo y sistemas críticos usan verificación en dos pasos?', fix: 'Activa la verificación en dos pasos en correo, banca y sistemas críticos. Es la medida con mejor relación esfuerzo y protección.' },
+  { q: '¿Tus colaboradores recibieron capacitación sobre phishing en los últimos 12 meses?', fix: 'Capacita a tus equipos con ejemplos reales de phishing, incluidos mensajes y llamadas creados con IA.' },
+  { q: '¿Has hecho una simulación de phishing para medir quién cae?', fix: 'Haz una simulación controlada de phishing para medir tu punto de partida y repítela cada seis meses.' },
+  { q: '¿Tienes un plan escrito de qué hacer si ocurre un incidente?', fix: 'Escribe un plan de respuesta de una página: a quién llamar, qué aislar y cómo comunicar.' },
+  { q: '¿Las personas que dejan la empresa pierden sus accesos el mismo día?', fix: 'Define un proceso de baja de accesos el mismo día de la salida, con una lista de sistemas a revisar.' },
+  { q: '¿Tienes copias de seguridad que se prueban y están separadas de la red principal?', fix: 'Separa las copias de seguridad de la red principal y prueba una restauración al menos una vez por trimestre.' },
+  { q: '¿Los equipos y sistemas se actualizan de forma regular?', fix: 'Programa las actualizaciones de sistemas y equipos y revisa cada mes que se apliquen.' },
+  { q: '¿Sabes qué datos sensibles maneja tu empresa y quién puede verlos?', fix: 'Haz un inventario de datos sensibles y limita su acceso a quien realmente lo necesita.' },
+]
+const answers = [
+  { label: 'Sí', risk: 0 },
+  { label: 'No lo sé', risk: 1 },
+  { label: 'No', risk: 2 },
+]
+---
+
+<Base
+  title="Autoevaluación de ciberseguridad y riesgo de phishing"
+  description="Ocho preguntas para medir la exposición de tu empresa frente a phishing, accesos y respuesta a incidentes. Nivel de riesgo y acciones urgentes, gratis."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Diagnóstico gratuito"
+    title="¿Qué tan expuesta está tu empresa?"
+    lead="Ocho preguntas sobre phishing, accesos y respuesta a incidentes. Recibes tu nivel de riesgo y las acciones más urgentes."
+    crumbs={crumbs}
+  />
+
+  <section class="section pt-0" data-tool-root>
+    <div class="wrap grid gap-8 lg:grid-cols-[1.4fr_1fr]">
+      <form class="grid gap-4" data-quiz>
+        {
+          questions.map((item, i) => (
+            <fieldset class="glass p-6">
+              <legend class="sr-only">Pregunta {i + 1}</legend>
+              <p class="font-mono text-[12px] text-cyan">0{i + 1}</p>
+              <p class="mt-3 text-lg">{item.q}</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                {answers.map((a) => (
+                  <label class="cursor-pointer">
+                    <input class="peer sr-only" type="radio" name={`q${i}`} value={a.risk} required />
+                    <span class="chip peer-checked:border-cyan peer-checked:bg-cyan/10 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-cyan">
+                      {a.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))
+        }
+        <button type="submit" class="btn btn-primary justify-self-start">Evaluar mi riesgo <span class="arrow" aria-hidden="true">→</span></button>
+      </form>
+
+      <div class="grid content-start gap-4 lg:sticky lg:top-8">
+        <div class="glass p-6 sm:p-8" aria-live="polite">
+          <p class="eyebrow">Tu nivel de riesgo</p>
+          <p class="mt-4 text-mist" data-empty>Responde las ocho preguntas para ver tu nivel de riesgo.</p>
+          <div class="hidden" data-filled>
+            <p class="mt-4 text-5xl font-medium tracking-tight" data-level></p>
+            <p class="mt-3 text-mist" data-explain></p>
+          </div>
+        </div>
+        <div class="glass hidden p-6 sm:p-8" data-detail>
+          <h3 class="text-xl font-medium">Acciones más urgentes</h3>
+          <ol class="mt-4 grid list-decimal gap-3 pl-5 text-mist marker:text-cyan" data-actions></ol>
+        </div>
+        <DiagnosticGate tool="ciberseguridad" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script define:vars={{ questions }} is:inline>
+  window.__questions = questions
+</script>
+
+<script>
+  import { openGate } from '@/scripts/gate'
+  const questions = (window as unknown as { __questions: { q: string; fix: string }[] }).__questions
+  const root = document.querySelector<HTMLElement>('[data-tool-root]')!
+  const form = root.querySelector<HTMLFormElement>('[data-quiz]')!
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const data = new FormData(form)
+    const risks = questions.map((_q, i) => Number(data.get(`q${i}`) ?? 0))
+    const ratio = risks.reduce((a, b) => a + b, 0) / (questions.length * 2)
+    const level = ratio < 0.25 ? 'Bajo' : ratio < 0.55 ? 'Medio' : 'Alto'
+    const explain =
+      level === 'Bajo'
+        ? 'Tienes las bases cubiertas. Conviene medirlas con una simulación para confirmarlo.'
+        : level === 'Medio'
+          ? 'Hay brechas que un ataque de phishing bien hecho podría aprovechar.'
+          : 'Tu empresa está expuesta. Un solo correo convincente podría comprometer cuentas o datos.'
+
+    root.querySelector('[data-empty]')!.classList.add('hidden')
+    root.querySelector('[data-filled]')!.classList.remove('hidden')
+    root.querySelector('[data-level]')!.textContent = `Riesgo ${level.toLowerCase()}`
+    root.querySelector('[data-explain]')!.textContent = explain
+
+    const urgent = questions
+      .map((q, i) => ({ ...q, risk: risks[i] }))
+      .filter((q) => q.risk > 0)
+      .sort((a, b) => b.risk - a.risk)
+      .slice(0, 4)
+    const summary = `Riesgo ${level} (${Math.round(ratio * 100)}%) · brechas: ${urgent.length}`
+    openGate(root, summary, () => {
+      root.querySelector('[data-actions]')!.innerHTML = urgent.length
+        ? urgent.map((u) => `<li>${u.fix}</li>`).join('')
+        : '<li>Mantén lo que haces y valídalo con una simulación de phishing cada seis meses.</li>'
+      root.querySelector('[data-detail]')!.classList.remove('hidden')
+    })
+  })
+</script>

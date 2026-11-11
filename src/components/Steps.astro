@@ -1,0 +1,21 @@
+---
+interface Props {
+  steps: { title: string; body: string }[]
+}
+const { steps } = Astro.props
+---
+
+<ol class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+  {
+    steps.map((s, i) => (
+      <li class="glass relative flex flex-col p-6">
+        <span class="font-mono text-sm text-cyan">0{i + 1}</span>
+        <h3 class="mt-6 text-xl font-medium tracking-tight">{s.title}</h3>
+        <p class="mt-2 text-[15px] text-mist">{s.body}</p>
+        {i < steps.length - 1 && (
+          <span class="absolute -right-3 top-1/2 hidden h-px w-6 bg-gradient-to-r from-cyan/60 to-transparent lg:block" aria-hidden="true" />
+        )}
+      </li>
+    ))
+  }
+</ol>

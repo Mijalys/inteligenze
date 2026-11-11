@@ -1,0 +1,68 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import ContactForm from '@/components/ContactForm.astro'
+import { founder, site } from '@/data/site'
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Contacto', path: '/contacto/' },
+]
+
+const channels = [
+  site.calendarUrl && { label: 'Agenda en calendario', href: site.calendarUrl, value: `Conversación de ${site.meetingMinutes} minutos` },
+  site.whatsapp && { label: 'WhatsApp', href: `https://wa.me/${site.whatsapp}`, value: 'Escríbenos por WhatsApp' },
+  site.email && { label: 'Correo', href: `mailto:${site.email}`, value: site.email },
+  { label: 'LinkedIn', href: site.linkedinCompany ?? founder.linkedin, value: site.linkedinCompany ? 'Inteligenze' : founder.name },
+  { label: 'Dirección', value: `${site.city}, ${site.countryName}` },
+].filter(Boolean) as { label: string; value: string; href?: string }[]
+---
+
+<Base
+  title="Contacto: agenda un diagnóstico de IA"
+  description={`Cuéntanos qué necesitas. Te respondemos en menos de ${site.responseHours} horas, sin compromiso. Consultora de IA en ${site.city}, ${site.countryName}.`}
+  pageType="ContactPage"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Contacto"
+    title="Cuéntanos qué necesitas."
+    lead={`Te respondemos en menos de ${site.responseHours} horas, sin compromiso.`}
+    crumbs={crumbs}
+  />
+
+  <section class="section pt-0">
+    <div class="wrap grid gap-10 lg:grid-cols-[1.5fr_1fr]">
+      <div>
+        <div class="glass mb-6 hidden p-5 text-mist" data-sent>
+          Gracias. Recibimos tu mensaje y te escribiremos pronto.
+        </div>
+        <ContactForm id="form-contacto" />
+      </div>
+      <aside>
+        <h2 class="eyebrow mb-6">Otras vías</h2>
+        <ul class="grid gap-3">
+          {
+            channels.map((c) => (
+              <li class="glass p-5">
+                <span class="block text-[13px] text-muted">{c.label}</span>
+                {c.href ? (
+                  <a href={c.href} class="mt-1 block text-lg hover:text-cyan" rel="noopener">{c.value}</a>
+                ) : (
+                  <span class="mt-1 block text-lg">{c.value}</span>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Mensaje tras un envío sin JavaScript (el servidor redirige con ?enviado=1)
+  if (new URLSearchParams(location.search).has('enviado')) {
+    document.querySelector('[data-sent]')?.classList.remove('hidden')
+  }
+</script>

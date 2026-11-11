@@ -1,0 +1,46 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import CtaBand from '@/components/CtaBand.astro'
+import { sectors } from '@/data/sectors'
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Sectores', path: '/sectores/' },
+]
+---
+
+<Base
+  title="Sectores: IA para finanzas, automotriz y logística"
+  description="Agentes de IA, automatización y ciberseguridad para entidades financieras, concesionarias y operadores logísticos en Perú."
+  pageType="CollectionPage"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Sectores"
+    title="Conocemos tu industria."
+    lead="Trabajamos con entidades financieras, empresas automotrices y operadores logísticos. Si tu industria no aparece aquí, el método es el mismo."
+    crumbs={crumbs}
+  />
+
+  <section class="section pt-0" aria-label="Sectores">
+    <div class="wrap grid gap-4 md:grid-cols-3">
+      {
+        sectors.map((s) => (
+          <article class="glass group relative flex flex-col p-7 hover:border-cyan/40">
+            <h2 class="text-3xl font-medium tracking-tight">
+              <a href={`/sectores/${s.slug}/`} class="after:absolute after:inset-0 after:rounded-[24px]">{s.name}</a>
+            </h2>
+            <p class="mt-3 text-mist">{s.headline}</p>
+            <ul class="mt-6 grid gap-2 text-[15px] text-mist">
+              {s.whatWeDo.map((w) => <li class="flex gap-3"><span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-cyan" aria-hidden="true" />{w}</li>)}
+            </ul>
+            <span class="mt-auto inline-flex items-center gap-2 pt-8 text-cyan">IA para {s.name.toLowerCase()} <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span></span>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand title="Cuéntanos tu operación." body="Te decimos dónde la IA da resultados primero en tu industria." primary={{ label: 'Hablemos', href: '/contacto/' }} />
+</Base>

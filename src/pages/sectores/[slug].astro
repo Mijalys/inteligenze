@@ -1,0 +1,80 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import CaseCard from '@/components/CaseCard.astro'
+import CtaBand from '@/components/CtaBand.astro'
+import SectionHeading from '@/components/SectionHeading.astro'
+import { sectors, type Sector } from '@/data/sectors'
+import { services } from '@/data/services'
+import { getCase, type Case } from '@/data/cases'
+
+export function getStaticPaths() {
+  return sectors.map((s) => ({ params: { slug: s.slug }, props: { sector: s } }))
+}
+
+const { sector } = Astro.props as { sector: Sector }
+const related = sector.relatedCases.map(getCase).filter((c): c is Case => Boolean(c))
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Sectores', path: '/sectores/' },
+  { name: sector.name, path: `/sectores/${sector.slug}/` },
+]
+---
+
+<Base title={sector.title} description={sector.metaDescription} breadcrumbs={crumbs}>
+  <PageHero eyebrow={`Sector ${sector.name.toLowerCase()}`} title={sector.headline} crumbs={crumbs}>
+    <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+      <a href="/contacto/" class="btn btn-primary">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>
+      <a href="/diagnosticos/" class="btn btn-ghost">Diagnósticos gratuitos</a>
+    </div>
+  </PageHero>
+
+  <section class="section pt-0">
+    <div class="wrap grid gap-6 lg:grid-cols-2">
+      <div class="glass p-7 sm:p-10">
+        <h2 class="eyebrow mb-6">Retos típicos del sector</h2>
+        <ul class="grid gap-4 text-lg">
+          {sector.challenges.map((c) => <li class="flex gap-3"><span class="mt-3 size-1.5 shrink-0 rounded-full bg-cyan" aria-hidden="true" />{c}</li>)}
+        </ul>
+      </div>
+      <div class="glass p-7 sm:p-10">
+        <h2 class="eyebrow mb-6">Qué hacemos</h2>
+        <ul class="grid gap-4 text-lg">
+          {sector.whatWeDo.map((c) => <li class="flex gap-3"><span class="mt-3 size-1.5 shrink-0 rounded-full bg-cyan" aria-hidden="true" />{c}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pt-0" aria-labelledby="servicios">
+    <div class="wrap">
+      <SectionHeading id="servicios" eyebrow="Con los tres servicios" title={`Cómo trabajamos en ${sector.name.toLowerCase()}.`} />
+      <div class="mt-12 grid gap-4 lg:grid-cols-3">
+        {
+          services.map((s) => (
+            <a href={`/servicios/${s.slug}/`} class="glass group block p-7 hover:border-cyan/40">
+              <h3 class="text-2xl font-medium tracking-tight">{s.name}</h3>
+              <p class="mt-3 text-mist">{s.short}</p>
+              <span class="mt-6 inline-flex items-center gap-2 text-cyan">{s.cardCta} <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span></span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    related.length > 0 && (
+      <section class="section pt-0" aria-labelledby="experiencia">
+        <div class="wrap">
+          <SectionHeading id="experiencia" eyebrow="Experiencia relacionada" title="Lo que ya construimos y medimos." />
+          <div class="mt-12 grid gap-4 md:grid-cols-2">
+            {related.map((c) => <CaseCard item={c} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBand title="Si tu industria no aparece aquí, el método es el mismo." body="Cuéntanos tu operación y te decimos por dónde empezar." primary={{ label: 'Hablemos', href: '/contacto/' }} />
+</Base>

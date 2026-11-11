@@ -1,0 +1,92 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import CaseCard from '@/components/CaseCard.astro'
+import CtaBand from '@/components/CtaBand.astro'
+import { cases, serviceLabels } from '@/data/cases'
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Casos', path: '/casos/' },
+]
+const serviceFilters = (Object.keys(serviceLabels) as (keyof typeof serviceLabels)[]).filter((k) =>
+  cases.some((c) => c.services.includes(k)),
+)
+const sectorFilters = [...new Set(cases.flatMap((c) => c.sectors))]
+const itemList = {
+  '@type': 'ItemList',
+  itemListElement: cases.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: new URL(`/casos/${c.slug}/`, 'https://inteligenze.com').toString(),
+    name: `${c.client}: ${c.title}`,
+  })),
+}
+---
+
+<Base
+  title="Casos: agentes de IA, automatización y producto digital"
+  description="Agentes de IA que venden por WhatsApp, RAG agéntico para reportes ESG y productos financieros con resultados medidos: −25% de consultas y −36% de tiempo."
+  pageType="CollectionPage"
+  breadcrumbs={crumbs}
+  schema={[itemList]}
+>
+  <PageHero
+    eyebrow="Casos"
+    title="Experiencia que ya está en producción."
+    lead="Estos son agentes, automatizaciones y productos digitales que lideró o diseñó Mijalys Silva, fundador de Inteligenze. Cada caso indica su rol y el periodo. Filtra por servicio o por sector."
+    crumbs={crumbs}
+  />
+
+  <section class="section pt-0" aria-label="Lista de casos">
+    <div class="wrap">
+      <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar casos" data-filters>
+        <button type="button" class="chip aria-pressed:border-cyan aria-pressed:bg-cyan/10 aria-pressed:text-white" aria-pressed="true" data-filter="all">Todos</button>
+        {
+          serviceFilters.map((k) => (
+            <button type="button" class="chip aria-pressed:border-cyan aria-pressed:bg-cyan/10 aria-pressed:text-white" aria-pressed="false" data-filter={`service:${k}`}>
+              {serviceLabels[k]}
+            </button>
+          ))
+        }
+        {
+          sectorFilters.map((s) => (
+            <button type="button" class="chip aria-pressed:border-cyan aria-pressed:bg-cyan/10 aria-pressed:text-white" aria-pressed="false" data-filter={`sector:${s}`}>
+              {s}
+            </button>
+          ))
+        }
+      </div>
+      <p class="sr-only" aria-live="polite" data-count></p>
+
+      <ul class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3" data-cases>
+        {cases.map((c) => <li class="h-full"><CaseCard item={c} headingLevel="h2" /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title="¿Tu reto se parece a alguno de estos?" body="Cuéntanoslo y te proponemos el plan del primer ciclo." primary={{ label: 'Hablemos', href: '/contacto/' }} />
+</Base>
+
+<script>
+  const group = document.querySelector<HTMLElement>('[data-filters]')
+  const items = [...document.querySelectorAll<HTMLElement>('[data-cases] > li')]
+  const count = document.querySelector<HTMLElement>('[data-count]')
+  group?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-filter]')
+    if (!btn) return
+    group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)))
+    const [kind, value] = (btn.dataset.filter ?? 'all').split(':')
+    let shown = 0
+    items.forEach((li) => {
+      const card = li.querySelector<HTMLElement>('article')!
+      const match =
+        kind === 'all' ||
+        (kind === 'service' && (card.dataset.services ?? '').split(' ').includes(value)) ||
+        (kind === 'sector' && (card.dataset.sectors ?? '').split('|').includes(value))
+      li.hidden = !match
+      if (match) shown++
+    })
+    if (count) count.textContent = `${shown} casos`
+  })
+</script>

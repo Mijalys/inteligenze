@@ -1,0 +1,132 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import SectionHeading from '@/components/SectionHeading.astro'
+import Steps from '@/components/Steps.astro'
+import Faq from '@/components/Faq.astro'
+import CaseCard from '@/components/CaseCard.astro'
+import CtaBand from '@/components/CtaBand.astro'
+import { services, type Service } from '@/data/services'
+import { getCase } from '@/data/cases'
+import { faqPage, serviceSchema } from '@/lib/schema'
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }))
+}
+
+const { service } = Astro.props as { service: Service }
+const related = service.relatedCase ? getCase(service.relatedCase) : undefined
+const others = services.filter((s) => s.slug !== service.slug)
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Servicios', path: '/servicios/' },
+  { name: service.name, path: `/servicios/${service.slug}/` },
+]
+---
+
+<Base
+  title={service.title}
+  description={service.metaDescription}
+  breadcrumbs={crumbs}
+  schema={[serviceSchema(service), faqPage(service.faqs, `/servicios/${service.slug}/`)]}
+>
+  <PageHero eyebrow={service.name} title={service.promise} lead={service.lead} crumbs={crumbs}>
+    <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+      <a href="/contacto/" class="btn btn-primary">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>
+      <a href={service.secondaryCta.href} class="btn btn-ghost">{service.secondaryCta.label}</a>
+    </div>
+  </PageHero>
+
+  <section class="section pt-0" aria-labelledby="para-quien">
+    <div class="wrap grid gap-6 lg:grid-cols-2">
+      <div class="glass p-7 sm:p-10">
+        <p class="eyebrow mb-5">Para quién es</p>
+        <h2 id="para-quien" class="text-2xl font-medium tracking-tight sm:text-3xl">{service.audience}</h2>
+      </div>
+      <div class="glass p-7 sm:p-10">
+        <p class="eyebrow mb-5">Problemas que resuelve</p>
+        <ul class="grid gap-4">
+          {
+            service.problems.map((p) => (
+              <li class="flex gap-3 text-mist">
+                <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-cyan" aria-hidden="true" />
+                {p}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pt-0" aria-labelledby="entregamos">
+    <div class="wrap">
+      <SectionHeading id="entregamos" eyebrow="Qué entregamos" title="Lo que recibes al cerrar cada ciclo." />
+      <div class="mt-12 grid gap-4 md:grid-cols-2">
+        {
+          service.deliverables.map((d) => (
+            <div class="glass p-7">
+              {d.title && <h3 class="text-xl font-medium tracking-tight">{d.title}</h3>}
+              <p class="mt-2 text-mist">{d.body}</p>
+            </div>
+          ))
+        }
+      </div>
+      {
+        service.examples && (
+          <div class="mt-10">
+            <h3 class="text-xl font-medium">Ejemplos de casos</h3>
+            <ul class="mt-5 grid gap-3 md:grid-cols-2">
+              {service.examples.map((e) => (
+                <li class="chip min-h-0 justify-start rounded-2xl py-3 text-[15px]">{e}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section pt-0" aria-labelledby="como">
+    <div class="wrap">
+      <SectionHeading id="como" eyebrow="Cómo trabajamos" title="Cuatro pasos, con alcance, fecha y precio por escrito." />
+      <div class="mt-12"><Steps steps={service.steps} /></div>
+    </div>
+  </section>
+
+  {
+    related && (
+      <section class="section pt-0" aria-labelledby="caso">
+        <div class="wrap grid items-center gap-10 lg:grid-cols-[1fr_1.2fr]">
+          <SectionHeading id="caso" eyebrow="Caso relacionado" title="Así se ve en la práctica." />
+          <CaseCard item={related} />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section pt-0" aria-labelledby="faq">
+    <div class="wrap grid gap-10 lg:grid-cols-[1fr_1.6fr]">
+      <SectionHeading id="faq" eyebrow="Preguntas frecuentes" title={`Sobre ${service.name}`} />
+      <Faq faqs={service.faqs} />
+    </div>
+  </section>
+
+  <section class="pb-4" aria-label="Otros servicios">
+    <div class="wrap grid gap-4 md:grid-cols-2">
+      {
+        others.map((o) => (
+          <a href={`/servicios/${o.slug}/`} class="glass group flex items-center justify-between gap-6 p-6 hover:border-cyan/40">
+            <span>
+              <span class="block text-[13px] text-muted">Otro servicio</span>
+              <span class="mt-1 block text-xl font-medium">{o.name}</span>
+            </span>
+            <span class="text-cyan transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand title={service.closing} />
+</Base>

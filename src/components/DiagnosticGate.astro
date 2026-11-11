@@ -1,0 +1,51 @@
+---
+// Pide los datos de contacto antes de mostrar el resultado completo de un diagnóstico.
+import { site } from '@/data/site'
+interface Props {
+  tool: string
+}
+const { tool } = Astro.props
+---
+
+<form class="glass hidden gap-5 p-6 sm:p-8" data-gate data-tool={tool} action="/api/contact/" method="post">
+  <div>
+    <h3 class="text-2xl font-medium tracking-tight">Recibe tu diagnóstico completo</h3>
+    <p class="mt-2 text-mist">Déjanos tus datos para ver el detalle y las recomendaciones.</p>
+  </div>
+  <input type="hidden" name="origen" value={tool} />
+  <input type="hidden" name="resultado" value="" data-result-field />
+  <div class="hidden" aria-hidden="true">
+    <label>No completes este campo <input type="text" name="sitio_web" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <label class="label" for={`${tool}-nombre`}>Nombre</label>
+      <input class="field" id={`${tool}-nombre`} name="nombre" autocomplete="name" required maxlength="120" />
+    </div>
+    <div>
+      <label class="label" for={`${tool}-correo`}>Correo corporativo</label>
+      <input class="field" id={`${tool}-correo`} name="correo" type="email" autocomplete="email" required maxlength="160" />
+    </div>
+    <div>
+      <label class="label" for={`${tool}-empresa`}>Empresa</label>
+      <input class="field" id={`${tool}-empresa`} name="empresa" autocomplete="organization" required maxlength="160" />
+    </div>
+    <div>
+      <label class="label" for={`${tool}-cargo`}>Cargo</label>
+      <input class="field" id={`${tool}-cargo`} name="cargo" autocomplete="organization-title" maxlength="120" />
+    </div>
+  </div>
+  <label class="flex items-start gap-3 text-[15px] text-mist">
+    <input type="checkbox" name="privacidad" value="acepto" required class="mt-1 size-5 accent-cyan" />
+    <span>Acepto la <a class="link" href="/privacidad/">política de privacidad</a>.</span>
+  </label>
+  <button type="submit" class="btn btn-cyan justify-self-start">Ver mi diagnóstico <span class="arrow" aria-hidden="true">→</span></button>
+</form>
+
+<div class="glass hidden p-6 sm:p-8" data-next>
+  <h3 class="text-2xl font-medium tracking-tight">Este es tu diagnóstico.</h3>
+  <p class="mt-2 text-mist">
+    Si quieres revisarlo con un especialista y definir un plan, agenda una conversación de {site.meetingMinutes} minutos.
+  </p>
+  <a href={site.calendarUrl ?? '/contacto/'} class="btn btn-primary mt-6">Agendar <span class="arrow" aria-hidden="true">→</span></a>
+</div>

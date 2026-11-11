@@ -1,0 +1,102 @@
+---
+import { site } from '@/data/site'
+import { services } from '@/data/services'
+interface Props {
+  id?: string
+}
+const { id = 'formulario' } = Astro.props
+const fallback = site.email
+  ? `Intenta de nuevo o escríbenos a ${site.email}.`
+  : 'Intenta de nuevo en unos minutos.'
+---
+
+<form
+  id={id}
+  method="post"
+  action="/api/contact/"
+  class="glass grid gap-5 p-6 sm:p-8"
+  data-contact-form
+  data-error={`No pudimos enviar el formulario. ${fallback}`}
+>
+  <input type="hidden" name="origen" value="contacto" />
+  <div class="hidden" aria-hidden="true">
+    <label>No completes este campo <input type="text" name="sitio_web" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div>
+      <label class="label" for={`${id}-nombre`}>Nombre completo</label>
+      <input class="field" id={`${id}-nombre`} name="nombre" autocomplete="name" required maxlength="120" />
+    </div>
+    <div>
+      <label class="label" for={`${id}-correo`}>Correo corporativo</label>
+      <input class="field" id={`${id}-correo`} name="correo" type="email" autocomplete="email" required maxlength="160" />
+    </div>
+    <div>
+      <label class="label" for={`${id}-empresa`}>Empresa</label>
+      <input class="field" id={`${id}-empresa`} name="empresa" autocomplete="organization" required maxlength="160" />
+    </div>
+    <div>
+      <label class="label" for={`${id}-cargo`}>Cargo</label>
+      <input class="field" id={`${id}-cargo`} name="cargo" autocomplete="organization-title" maxlength="120" />
+    </div>
+  </div>
+
+  <fieldset>
+    <legend class="label">Servicio de interés</legend>
+    <div class="flex flex-wrap gap-2">
+      {
+        [...services.map((s) => s.name), 'No lo sé aún'].map((label, i) => (
+          <label class="cursor-pointer">
+            <input class="peer sr-only" type="radio" name="servicio" value={label} checked={i === 3} />
+            <span class="chip peer-checked:border-cyan peer-checked:bg-cyan/10 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-cyan">
+              {label}
+            </span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <div>
+    <label class="label" for={`${id}-reto`}>Cuéntanos tu reto</label>
+    <textarea class="field min-h-36 resize-y" id={`${id}-reto`} name="reto" required maxlength="4000"></textarea>
+  </div>
+
+  <label class="flex items-start gap-3 text-[15px] text-mist">
+    <input type="checkbox" name="privacidad" value="acepto" required class="mt-1 size-5 accent-cyan" />
+    <span>Acepto la <a class="link" href="/privacidad/">política de privacidad</a>.</span>
+  </label>
+
+  <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+    <button type="submit" class="btn btn-cyan">Enviar <span class="arrow" aria-hidden="true">→</span></button>
+    <p class="text-[15px] text-mist" role="status" aria-live="polite" data-status></p>
+  </div>
+</form>
+
+<script>
+  const forms = document.querySelectorAll<HTMLFormElement>('[data-contact-form]')
+  forms.forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const status = form.querySelector<HTMLElement>('[data-status]')!
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!
+      button.disabled = true
+      status.textContent = 'Enviando…'
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        })
+        if (!res.ok) throw new Error(String(res.status))
+        form.reset()
+        status.textContent = 'Gracias. Recibimos tu mensaje y te escribiremos pronto.'
+      } catch {
+        status.textContent = form.dataset.error ?? 'No pudimos enviar el formulario.'
+      } finally {
+        button.disabled = false
+      }
+    })
+  })
+</script>

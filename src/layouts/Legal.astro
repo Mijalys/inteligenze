@@ -1,0 +1,29 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import { site } from '@/data/site'
+
+interface Props {
+  title: string
+  description: string
+  path: string
+}
+const { title, description, path } = Astro.props
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: title, path },
+]
+---
+
+<Base title={title} description={description} breadcrumbs={crumbs}>
+  <PageHero eyebrow="Legales" title={title} crumbs={crumbs}>
+    <p class="mt-6 text-[15px] text-muted">Última actualización: {new Date(site.lastUpdated).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}</p>
+  </PageHero>
+  <section class="section pt-0">
+    <div class="wrap">
+      <div class="prose-ink max-w-3xl">
+        <slot />
+      </div>
+    </div>
+  </section>
+</Base>

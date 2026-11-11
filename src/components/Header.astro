@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets'
+import logo from '@/assets/logo-on-dark.png'
+import { nav } from '@/data/site'
+
+const path = Astro.url.pathname
+const isActive = (href: string) => path === href || path.startsWith(href)
+---
+
+<header class="absolute inset-x-0 top-0 z-30">
+  <div class="wrap flex h-20 items-center justify-between gap-4 lg:h-24">
+    <a href="/" class="flex shrink-0 items-center" aria-label="Inteligenze, inicio">
+      <Image src={logo} alt="Inteligenze" width={150} class="h-auto w-[132px] lg:w-[150px]" loading="eager" />
+    </a>
+
+    <nav aria-label="Principal" class="hidden lg:block">
+      <ul class="flex items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.04] p-1.5 backdrop-blur-xl">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class:list={[
+                  'block rounded-xl px-4 py-2.5 text-[15px] transition-colors',
+                  isActive(item.href) ? 'bg-white/10 text-white' : 'text-mist hover:text-white',
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/contacto/" class="btn btn-ghost btn-sm hidden sm:inline-flex">Hablemos</a>
+
+      <details class="group relative lg:hidden">
+        <summary
+          class="flex size-11 cursor-pointer list-none items-center justify-center rounded-xl border border-white/15 bg-white/5 [&::-webkit-details-marker]:hidden"
+          aria-label="Abrir menú"
+        >
+          <svg class="size-5 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+          <svg class="hidden size-5 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </summary>
+        <div class="glass absolute right-0 top-14 w-[min(86vw,320px)] p-3">
+          <ul class="grid gap-1">
+            {
+              nav.map((item) => (
+                <li>
+                  <a href={item.href} class="block rounded-xl px-4 py-3 text-base text-mist hover:bg-white/5 hover:text-white">
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+            <li class="pt-2">
+              <a href="/contacto/" class="btn btn-cyan w-full">Hablemos</a>
+            </li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>

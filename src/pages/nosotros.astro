@@ -1,0 +1,123 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import SectionHeading from '@/components/SectionHeading.astro'
+import CtaBand from '@/components/CtaBand.astro'
+import { founder, site } from '@/data/site'
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Nosotros', path: '/nosotros/' },
+]
+
+const track = [
+  `Más de ${site.foundingYearsExperience} años liderando soluciones tecnológicas corporativas en banca, pagos y tecnología.`,
+  'Parte del batch de Google for Startups, categoría IA Generativa, con especialidad en diseño conversacional.',
+  'Agentes de IA en uso en los sectores financiero y logístico.',
+  'Trayectoria previa en Wayra (Fundación Telefónica).',
+]
+
+const principles = [
+  { t: 'Resultados, no horas', b: 'Lo importante es lo que se entrega y se mide.' },
+  { t: 'Claridad antes de empezar', b: 'Alcance, fecha y precio por escrito.' },
+  { t: 'Personas al mando', b: 'La IA acelera, las personas deciden.' },
+  { t: 'Seguridad desde el diseño', b: 'Protegemos tus datos y tu operación.' },
+]
+
+const career = [
+  { org: 'Headland', role: 'Líder del programa de formación en IA', when: '2026 – hoy' },
+  { org: 'Wirbi', role: 'Board Member, vertical de IA y Product', when: '2026 – hoy' },
+  { org: 'Ventabot', role: 'Co-Founder y CPO · Google for Startups', when: '2024 – 2025' },
+  { org: 'Primax Solutions', role: 'Product Designer', when: '2023' },
+  { org: 'Niubiz', role: 'Product Designer', when: '2022' },
+  { org: 'Redeban', role: 'Lead Product Designer', when: '2021 – 2022' },
+  { org: 'Caja Metropolitana de Lima', role: 'Lead Product Designer', when: '2021' },
+  { org: 'Caja Cusco', role: 'Product Designer', when: '2020' },
+  { org: 'Banco Ripley Perú', role: 'Head of UX Design', when: '2018 – 2020' },
+]
+---
+
+<Base
+  title="Nosotros: consultora de IA liderada por Mijalys Silva"
+  description="Consultora de IA en Lima liderada por Mijalys Silva, con más de 12 años en banca, pagos y tecnología. Parte del batch de Google for Startups (IA Generativa)."
+  pageType="AboutPage"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Nosotros"
+    title="Una consultora de IA que traduce tecnología en resultados."
+    lead="Inteligenze es una consultora de IA que diseña agentes y software a medida, automatiza procesos y refuerza la ciberseguridad de las empresas. Nuestro enfoque es simple: acordar qué se entrega, cuándo y a qué costo, y medir el resultado."
+    crumbs={crumbs}
+  />
+
+  <section class="section pt-0" aria-labelledby="trayectoria">
+    <div class="wrap grid gap-10 lg:grid-cols-[1fr_1.4fr]">
+      <SectionHeading id="trayectoria" eyebrow="Nuestra trayectoria" title="Experiencia que ya está en producción." />
+      <ul class="grid gap-3">
+        {track.map((t) => <li class="glass flex gap-4 p-5 text-mist"><span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-cyan" aria-hidden="true" />{t}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section pt-0" aria-labelledby="liderazgo">
+    <div class="wrap">
+      <div class="glass relative overflow-hidden p-7 sm:p-12">
+        <div class="glow-bottom" aria-hidden="true"></div>
+        <div class="relative grid gap-12 lg:grid-cols-[1fr_1.2fr]">
+          <div>
+            <p class="eyebrow mb-5">Liderazgo</p>
+            <h2 id="liderazgo" class="sheen text-[clamp(32px,4vw,52px)]">{founder.name}</h2>
+            <p class="mt-2 text-lg text-mist">{founder.role}</p>
+            <div class="mt-8 text-lg text-mist">
+              <p>
+                Product Engineer con más de 12 años en banca y tecnología. Cubre el recorrido completo: entiende el problema de negocio y el comportamiento del usuario, rediseña el proceso, diseña la orquestación de agentes, construye el sistema y lo lleva a producción.
+              </p>
+              <p class="mt-4">
+                Construye con LangChain, Vertex AI, n8n, Copilot Studio, Power Automate y MCP, y aplica harness engineering para que los agentes sean predecibles, verificables y auditables. Participó en Wayra (Fundación Telefónica) con DUHEM, el primer e-commerce de comercio justo de Latinoamérica. Fue docente de Educación Continua en UX en Toulouse Lautrec entre 2019 y 2024, y es conferencista en IA.
+              </p>
+            </div>
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href={founder.linkedin} class="btn btn-ghost btn-sm" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a>
+              <a href={founder.portfolio} class="btn btn-ghost btn-sm" rel="noopener">Portafolio <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+          <div>
+            <h3 class="eyebrow mb-5">Recorrido</h3>
+            <ol class="grid">
+              {
+                career.map((c) => (
+                  <li class="grid grid-cols-[1fr_auto] gap-4 border-b border-white/10 py-4">
+                    <span>
+                      <span class="block font-medium">{c.org}</span>
+                      <span class="block text-[15px] text-mist">{c.role}</span>
+                    </span>
+                    <span class="font-mono text-[13px] text-muted">{c.when}</span>
+                  </li>
+                ))
+              }
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pt-0" aria-labelledby="principios">
+    <div class="wrap">
+      <SectionHeading id="principios" eyebrow="Nuestros principios" title="Cómo decidimos." />
+      <div class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {
+          principles.map((p, i) => (
+            <div class="glass p-7">
+              <span class="font-mono text-sm text-cyan">0{i + 1}</span>
+              <h3 class="mt-8 text-xl font-medium tracking-tight">{p.t}</h3>
+              <p class="mt-2 text-mist">{p.b}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title="Conversemos sobre lo que tu empresa necesita." primary={{ label: 'Hablemos', href: '/contacto/' }} />
+</Base>

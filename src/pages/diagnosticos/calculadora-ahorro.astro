@@ -1,0 +1,109 @@
+---
+import Base from '@/layouts/Base.astro'
+import PageHero from '@/components/PageHero.astro'
+import DiagnosticGate from '@/components/DiagnosticGate.astro'
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Diagnósticos gratuitos', path: '/diagnosticos/' },
+  { name: 'Calculadora de ahorro', path: '/diagnosticos/calculadora-ahorro/' },
+]
+const inputs = [
+  { id: 'personas', label: 'Personas que trabajan en el proceso', value: 3, min: 1, max: 500, step: 1, suffix: 'personas' },
+  { id: 'horas', label: 'Horas por semana que cada una dedica a tareas manuales', value: 10, min: 1, max: 48, step: 1, suffix: 'h/semana' },
+  { id: 'costo', label: 'Costo por hora de cada persona (sueldo y cargas)', value: 25, min: 1, max: 1000, step: 1, suffix: 'S/ por hora' },
+]
+---
+
+<Base
+  title="Calculadora de ahorro por automatización con IA"
+  description="Calcula cuántas horas y cuánto dinero consume un proceso manual y el ahorro mensual y anual que podrías lograr al automatizarlo con IA."
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    eyebrow="Diagnóstico gratuito"
+    title="¿Cuánto te cuesta hoy un proceso manual?"
+    lead="Ingresa cuántas personas participan, cuántas horas dedican y cuánto cuesta su hora. Te mostramos el ahorro estimado al automatizar una parte del proceso."
+    crumbs={crumbs}
+  />
+
+  <section class="section pt-0" data-tool-root>
+    <div class="wrap grid gap-8 lg:grid-cols-[1.2fr_1fr]">
+      <form class="glass grid gap-6 p-6 sm:p-8" data-calc>
+        {
+          inputs.map((i) => (
+            <div>
+              <label class="label" for={i.id}>{i.label}</label>
+              <div class="flex items-center gap-3">
+                <input class="field max-w-40" type="number" inputmode="decimal" id={i.id} name={i.id} value={i.value} min={i.min} max={i.max} step={i.step} required />
+                <span class="text-[15px] text-muted">{i.suffix}</span>
+              </div>
+            </div>
+          ))
+        }
+        <div>
+          <label class="label" for="pct">Parte del trabajo que se puede automatizar: <output class="text-white" for="pct" data-pct-out>60%</output></label>
+          <input class="w-full accent-cyan" type="range" id="pct" name="pct" min="10" max="90" step="5" value="60" />
+          <p class="mt-2 text-[14px] text-muted">Si no lo sabes, 60% es una estimación prudente para tareas de copiar datos, clasificar correos o responder consultas frecuentes.</p>
+        </div>
+        <button type="submit" class="btn btn-primary justify-self-start">Calcular mi ahorro <span class="arrow" aria-hidden="true">→</span></button>
+      </form>
+
+      <div class="grid content-start gap-4 lg:sticky lg:top-8">
+        <div class="glass p-6 sm:p-8" aria-live="polite">
+          <p class="eyebrow">Ahorro estimado</p>
+          <p class="mt-4 text-mist" data-empty>Completa los datos y pulsa calcular.</p>
+          <div class="hidden" data-filled>
+            <p class="mt-4 text-5xl font-medium tracking-tight" data-month></p>
+            <p class="mt-1 text-mist">al mes</p>
+          </div>
+        </div>
+        <div class="glass hidden p-6 sm:p-8" data-detail>
+          <dl class="grid gap-5">
+            <div><dt class="text-[14px] text-muted">Ahorro anual estimado</dt><dd class="mt-1 text-3xl font-medium" data-year></dd></div>
+            <div><dt class="text-[14px] text-muted">Horas liberadas al mes</dt><dd class="mt-1 text-3xl font-medium" data-hours></dd></div>
+            <div><dt class="text-[14px] text-muted">Costo mensual actual del trabajo manual</dt><dd class="mt-1 text-xl text-mist" data-cost></dd></div>
+          </dl>
+          <p class="mt-6 text-[14px] text-muted">Es una estimación preliminar. En el diagnóstico la calculamos con tus propios datos y, al cierre del caso, medimos el ahorro real.</p>
+        </div>
+        <DiagnosticGate tool="calculadora-ahorro" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { openGate } from '@/scripts/gate'
+  const root = document.querySelector<HTMLElement>('[data-tool-root]')!
+  const form = root.querySelector<HTMLFormElement>('[data-calc]')!
+  const pct = form.querySelector<HTMLInputElement>('#pct')!
+  const out = form.querySelector<HTMLOutputElement>('[data-pct-out]')!
+  pct.addEventListener('input', () => (out.textContent = `${pct.value}%`))
+  const money = new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN', maximumFractionDigits: 0 })
+  const num = new Intl.NumberFormat('es-PE', { maximumFractionDigits: 0 })
+  const WEEKS_PER_MONTH = 52 / 12
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const d = new FormData(form)
+    const personas = Number(d.get('personas'))
+    const horas = Number(d.get('horas'))
+    const costo = Number(d.get('costo'))
+    const share = Number(d.get('pct')) / 100
+    const monthlyHours = personas * horas * WEEKS_PER_MONTH
+    const monthlyCost = monthlyHours * costo
+    const saving = monthlyCost * share
+
+    root.querySelector('[data-empty]')!.classList.add('hidden')
+    root.querySelector('[data-filled]')!.classList.remove('hidden')
+    root.querySelector('[data-month]')!.textContent = money.format(saving)
+
+    const summary = `Ahorro ${money.format(saving)}/mes, ${money.format(saving * 12)}/año · ${num.format(monthlyHours * share)} h/mes · ${personas} personas, ${horas} h/sem, S/ ${costo}/h, ${Math.round(share * 100)}%`
+    openGate(root, summary, () => {
+      root.querySelector('[data-year]')!.textContent = money.format(saving * 12)
+      root.querySelector('[data-hours]')!.textContent = `${num.format(monthlyHours * share)} h`
+      root.querySelector('[data-cost]')!.textContent = money.format(monthlyCost)
+      root.querySelector('[data-detail]')!.classList.remove('hidden')
+    })
+  })
+</script>

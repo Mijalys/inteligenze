@@ -1,0 +1,37 @@
+---
+interface Props {
+  eyebrow?: string
+  title: string
+  lead?: string
+  crumbs?: { name: string; path: string }[]
+}
+const { eyebrow, title, lead, crumbs } = Astro.props
+---
+
+<section class="relative overflow-hidden pb-16 pt-36 lg:pb-24 lg:pt-44">
+  <div class="beam opacity-70" aria-hidden="true"></div>
+  <div class="wrap relative">
+    {
+      crumbs && crumbs.length > 1 && (
+        <nav aria-label="Ruta" class="mb-8 text-[14px] text-muted">
+          <ol class="flex flex-wrap items-center gap-2">
+            {crumbs.map((c, i) => (
+              <li class="flex items-center gap-2">
+                {i > 0 && <span aria-hidden="true">/</span>}
+                {i < crumbs.length - 1 ? (
+                  <a href={c.path} class="hover:text-white">{c.name}</a>
+                ) : (
+                  <span aria-current="page" class="text-mist">{c.name}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    {eyebrow && <p class="eyebrow mb-6">{eyebrow}</p>}
+    <h1 class="sheen max-w-4xl text-[clamp(40px,6.4vw,80px)]">{title}</h1>
+    {lead && <p class="mt-6 max-w-2xl text-lg text-mist sm:text-xl">{lead}</p>}
+    <slot />
+  </div>
+</section>
