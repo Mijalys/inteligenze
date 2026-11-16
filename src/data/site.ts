@@ -34,13 +34,26 @@ export const founder = {
   portfolio: 'https://mijalys-silva.vercel.app',
 }
 
-export type NavItem = { label: string; href: string; external?: boolean }
+export type NavItem = {
+  label: string
+  href: string
+  external?: boolean
+  children?: { label: string; href: string; description: string }[]
+}
 
 export const nav: NavItem[] = [
   { label: 'Servicios', href: '/servicios/' },
   { label: 'Casos', href: '/casos/' },
   { label: 'Sectores', href: '/sectores/' },
-  { label: 'Diagnósticos gratuitos', href: '/diagnosticos/' },
+  {
+    label: 'Recursos',
+    href: '/recursos/',
+    children: [
+      { label: 'Blog', href: '/blog/', description: 'Artículos sobre IA, automatización y ciberseguridad.' },
+      { label: 'Glosario de IA', href: '/recursos/glosario/', description: 'Los términos clave, explicados en simple.' },
+      { label: 'Diagnósticos gratuitos', href: '/diagnosticos/', description: 'Mide tu madurez en IA, tu riesgo y tu ahorro.' },
+    ],
+  },
   { label: 'Formación', href: 'https://headlandx.com', external: true },
   { label: 'Nosotros', href: '/nosotros/' },
 ]

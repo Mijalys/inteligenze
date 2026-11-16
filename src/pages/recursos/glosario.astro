@@ -1,0 +1,70 @@
+---
+import Base from '@/layouts/Base.astro'
+import { glossary } from '@/data/glossary'
+import { site } from '@/data/site'
+
+const path = '/recursos/glosario/'
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Recursos', path: '/recursos/' },
+  { name: 'Glosario de IA', path },
+]
+const termSet = {
+  '@type': 'DefinedTermSet',
+  '@id': `${new URL(path, site.url)}#glosario`,
+  name: 'Glosario de IA, automatización y ciberseguridad',
+  inLanguage: site.locale,
+  hasDefinedTerm: glossary.flatMap((g) =>
+    g.terms.map((t) => ({
+      '@type': 'DefinedTerm',
+      name: t.term,
+      description: t.definition,
+      url: `${new URL(path, site.url)}#${t.slug}`,
+    })),
+  ),
+}
+---
+
+<Base
+  corp
+  title="Glosario de IA, automatización y ciberseguridad"
+  description="Qué es un agente de IA, RAG, phishing, pentest o staff augmentation: los términos clave de IA, automatización y ciberseguridad, explicados en simple."
+  breadcrumbs={crumbs}
+  schema={[termSet]}
+>
+  <section class="border-b border-rule">
+    <div class="wrap py-14 lg:py-20">
+      <nav aria-label="Ruta" class="text-[14px] text-text-3"><a href="/recursos/" class="hover:text-navy">Recursos</a> / Glosario</nav>
+      <h1 class="mt-6 max-w-3xl text-[clamp(34px,4.4vw,52px)] leading-[1.08]">Glosario de IA, automatización y ciberseguridad</h1>
+      <p class="mt-5 max-w-2xl text-lg text-text-2">Los términos que más escuchamos en reuniones, explicados en una o dos frases.</p>
+      <nav class="mt-8 flex flex-wrap gap-2" aria-label="Categorías">
+        {glossary.map((g) => <a href={`#${g.name.toLowerCase().replaceAll(' ', '-')}`} class="rounded-full border border-rule px-4 py-2 text-[14px] text-text-2 hover:border-navy hover:text-navy">{g.name}</a>)}
+      </nav>
+    </div>
+  </section>
+
+  <div class="wrap grid gap-16 py-16 lg:py-20">
+    {
+      glossary.map((g) => (
+        <section id={g.name.toLowerCase().replaceAll(' ', '-')} aria-labelledby={`h-${g.name}`} class="scroll-mt-28">
+          <h2 id={`h-${g.name}`} class="text-2xl">{g.name}</h2>
+          <dl class="mt-6 grid gap-x-10 border-t border-rule md:grid-cols-2">
+            {g.terms.map((t) => (
+              <div id={t.slug} class="scroll-mt-28 border-b border-rule py-6">
+                <dt class="text-lg font-semibold">{t.term}</dt>
+                <dd class="mt-2 leading-relaxed text-text-2">
+                  {t.definition}
+                  {t.link && (
+                    <a href={t.link.href} class="link-arrow mt-2 block text-[15px]">
+                      Servicio: {t.link.label} →
+                    </a>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))
+    }
+  </div>
+</Base>

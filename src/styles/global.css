@@ -228,6 +228,24 @@ a.card:hover, .card.is-link:hover {
 .corp .field::placeholder { color: var(--color-text-3); }
 .corp .field:focus { border-color: var(--color-teal); box-shadow: 0 0 0 3px rgb(14 111 107 / 0.15); }
 .corp .label { color: var(--color-text-2); }
+/* Texto largo (blog) en el estilo claro: párrafos cortos y escaneables */
+.prose-corp { color: var(--color-text-2); font-size: 18px; line-height: 1.75; }
+.prose-corp > * + * { margin-top: 1.1em; }
+.prose-corp h2 { color: var(--color-navy); font-size: 28px; line-height: 1.2; margin-top: 2em; font-weight: 600; letter-spacing: -0.02em; }
+.prose-corp h3 { color: var(--color-navy); font-size: 21px; margin-top: 1.6em; font-weight: 600; }
+.prose-corp a { color: var(--color-teal); text-decoration: underline; text-underline-offset: 3px; }
+.prose-corp strong { color: var(--color-navy); font-weight: 600; }
+.prose-corp ul, .prose-corp ol { padding-left: 1.4em; display: grid; gap: 0.5em; }
+.prose-corp ul { list-style: disc; }
+.prose-corp ol { list-style: decimal; }
+.prose-corp li::marker { color: var(--color-teal); }
+.prose-corp blockquote { border-left: 3px solid var(--color-teal); padding: 0.2em 0 0.2em 1.2em; color: var(--color-navy); font-size: 20px; }
+.prose-corp img { border-radius: 14px; }
+.prose-corp table { width: 100%; border-collapse: collapse; font-size: 16px; }
+.prose-corp th, .prose-corp td { border-bottom: 1px solid var(--color-rule); padding: 10px 8px; text-align: left; }
+.prose-corp th { color: var(--color-navy); }
+.prose-corp code { background: var(--color-surface); padding: 0.1em 0.35em; border-radius: 6px; font-size: 0.9em; }
+
 /* Rejilla tenue para paneles azul marino */
 .grid-lines {
   background-image:

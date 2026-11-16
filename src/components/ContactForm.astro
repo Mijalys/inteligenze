@@ -48,7 +48,7 @@ const fallback = site.email
       {
         [...services.map((s) => s.name), 'No lo sé aún'].map((label, i) => (
           <label class="cursor-pointer">
-            <input class="peer sr-only" type="radio" name="servicio" value={label} checked={i === 3} />
+            <input class="peer sr-only" type="radio" name="servicio" value={label} checked={label === 'No lo sé aún'} />
             <span class="chip peer-checked:border-cyan peer-checked:bg-cyan/10 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-cyan">
               {label}
             </span>

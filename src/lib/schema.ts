@@ -1,6 +1,6 @@
 // JSON-LD (schema.org) para buscadores y motores de respuesta con IA.
 import { founder, site } from '@/data/site'
-import type { Faq, Service } from '@/data/services'
+import { services, type Faq, type Service, type SubService } from '@/data/services'
 import type { Case } from '@/data/cases'
 
 const abs = (path: string) => new URL(path, site.url).toString()
@@ -44,9 +44,7 @@ export function organization() {
       '@type': 'OfferCatalog',
       name: 'Servicios de Inteligenze',
       itemListElement: [
-        { '@type': 'Offer', itemOffered: { '@id': abs('/servicios/fabrica-con-ia/#service') } },
-        { '@type': 'Offer', itemOffered: { '@id': abs('/servicios/automatizacion-con-ia/#service') } },
-        { '@type': 'Offer', itemOffered: { '@id': abs('/servicios/ciberseguridad/#service') } },
+        ...services.map((s) => ({ '@type': 'Offer', itemOffered: { '@id': abs(`/servicios/${s.slug}/#service`) } })),
       ],
     },
     ...(sameAs.length ? { sameAs } : {}),
@@ -129,6 +127,23 @@ export function serviceSchema(s: Service) {
     areaServed: { '@type': 'Country', name: site.countryName },
     audience: { '@type': 'BusinessAudience', name: s.audience },
     keywords: s.keywords.join(', '),
+  }
+}
+
+export function subServiceSchema(family: Service, it: SubService) {
+  const path = `/servicios/${family.slug}/${it.slug}/`
+  return {
+    '@type': 'Service',
+    '@id': `${abs(path)}#service`,
+    name: it.name,
+    serviceType: it.name,
+    description: it.promise,
+    url: abs(path),
+    provider: { '@id': ORG_ID },
+    isRelatedTo: { '@id': `${abs(`/servicios/${family.slug}/`)}#service` },
+    areaServed: { '@type': 'Country', name: site.countryName },
+    audience: { '@type': 'BusinessAudience', name: it.audience },
+    keywords: it.keywords.join(', '),
   }
 }
 

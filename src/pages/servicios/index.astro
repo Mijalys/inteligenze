@@ -1,9 +1,7 @@
 ---
 import Base from '@/layouts/Base.astro'
-import PageHero from '@/components/PageHero.astro'
-import CtaBand from '@/components/CtaBand.astro'
-import Steps from '@/components/Steps.astro'
-import SectionHeading from '@/components/SectionHeading.astro'
+import Icon from '@/components/Icon.astro'
+import CorpHeading from '@/components/corp/CorpHeading.astro'
 import { services } from '@/data/services'
 import { method } from '@/data/site'
 import { serviceSchema } from '@/lib/schema'
@@ -12,47 +10,69 @@ const crumbs = [
   { name: 'Inicio', path: '/' },
   { name: 'Servicios', path: '/servicios/' },
 ]
+const total = services.reduce((n, s) => n + s.items.length, 0)
 ---
 
 <Base
-  title="Servicios de IA para empresas"
-  description="Software y agentes de IA a medida, automatización de procesos con IA y ciberseguridad frente a phishing, con alcance, fecha y precio acordados."
+  corp
+  title="Servicios: software, automatización, ciberseguridad y staffing"
+  description="Desarrollo de software y agentes de IA, automatización de procesos, ciberseguridad y staffing de tecnología, con alcance, fecha y precio acordados."
   pageType="CollectionPage"
   breadcrumbs={crumbs}
   schema={services.map(serviceSchema)}
 >
-  <PageHero
-    eyebrow="Servicios"
-    title="Tres formas de poner la IA a trabajar para ti."
-    lead="Construimos agentes y software a medida, automatizamos procesos y protegemos tu operación. En los tres casos acordamos alcance, fecha y precio antes de empezar."
-    crumbs={crumbs}
-  />
-
-  <section class="section pt-0" aria-label="Servicios">
-    <div class="wrap grid gap-4">
-      {
-        services.map((s, i) => (
-          <article class="glass group relative grid gap-6 p-7 transition-colors hover:border-cyan/40 sm:p-10 lg:grid-cols-[80px_1fr_1.2fr_auto] lg:items-center">
-            <span class="font-mono text-sm text-cyan">0{i + 1}</span>
-            <h2 class="text-3xl font-medium tracking-tight">
-              <a href={`/servicios/${s.slug}/`} class="after:absolute after:inset-0 after:rounded-[24px]">{s.name}</a>
-            </h2>
-            <p class="text-mist">{s.short}</p>
-            <span class="inline-flex items-center gap-2 font-medium text-cyan">
-              {s.cardCta} <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
-            </span>
-          </article>
-        ))
-      }
+  <section class="border-b border-rule">
+    <div class="wrap py-14 lg:py-20">
+      <p class="kicker">Servicios</p>
+      <h1 class="mt-4 max-w-3xl text-[clamp(34px,4.4vw,52px)] leading-[1.08]">Cuatro líneas de servicio, {total} formas de ayudarte</h1>
+      <p class="mt-5 max-w-2xl text-lg text-text-2">Construimos, automatizamos, protegemos y sumamos talento. En todos los casos acordamos alcance, fecha y precio antes de empezar.</p>
+      <nav class="mt-8 flex flex-wrap gap-2" aria-label="Líneas de servicio">
+        {services.map((s) => <a href={`#${s.slug}`} class="flex items-center gap-2 rounded-full border border-rule px-4 py-2 text-[14px] text-text-2 hover:border-navy hover:text-navy"><Icon name={s.icon} class="size-4 text-teal" />{s.name}</a>)}
+      </nav>
     </div>
   </section>
 
-  <section class="section pt-0" aria-labelledby="metodo">
-    <div class="wrap">
-      <SectionHeading id="metodo" eyebrow="Cómo trabajamos" title="Un método simple, en cuatro pasos." />
-      <div class="mt-12"><Steps steps={method} /></div>
+  {
+    services.map((s, i) => (
+      <section id={s.slug} class:list={['section scroll-mt-20', i % 2 === 1 && 'border-y border-rule bg-surface']} aria-labelledby={`h-${s.slug}`}>
+        <div class="wrap grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
+          <div data-reveal>
+            <span class="flex size-12 items-center justify-center rounded-xl bg-navy text-cyan"><Icon name={s.icon} class="size-6" /></span>
+            <h2 id={`h-${s.slug}`} class="mt-6 text-[clamp(28px,3vw,38px)] leading-tight">{s.name}</h2>
+            <p class="mt-4 text-lg leading-relaxed text-text-2">{s.short}</p>
+            <a href={`/servicios/${s.slug}/`} class="link-arrow mt-6 inline-block">{s.cardCta} →</a>
+          </div>
+          <ul class:list={['grid gap-4 sm:grid-cols-2', s.items.length === 3 && 'lg:grid-cols-3', s.items.length > 4 && 'lg:grid-cols-3']}>
+            {s.items.map((it) => (
+              <li>
+                <a href={`/servicios/${s.slug}/${it.slug}/`} class="card flex h-full flex-col p-5" data-reveal>
+                  <Icon name={it.icon} class="size-6 text-teal" />
+                  <span class="mt-4 font-semibold">{it.name}</span>
+                  <span class="mt-1.5 text-[14px] leading-snug text-text-3">{it.short}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="on-dark grid-lines bg-navy text-white" aria-labelledby="metodo">
+    <div class="wrap py-20">
+      <CorpHeading id="metodo" kicker="Cómo trabajamos" title="Un mismo método para todos los servicios" dark />
+      <ol class="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        {
+          method.map((m, i) => (
+            <li class="border-t border-white/15 pt-5">
+              <span class="text-[14px] font-semibold text-cyan">0{i + 1}</span>
+              <h3 class="mt-2 text-lg text-white">{m.title}</h3>
+              <p class="mt-2 text-[15px] text-mist">{m.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <a href="/contacto/" class="btn btn-white mt-12">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>
     </div>
   </section>
-
-  <CtaBand title="¿No sabes por cuál empezar?" body="El diagnóstico inicial te dice dónde la IA da resultados primero, con el plan y el precio del primer ciclo." secondary={{ label: 'Diagnósticos gratuitos', href: '/diagnosticos/' }} />
 </Base>

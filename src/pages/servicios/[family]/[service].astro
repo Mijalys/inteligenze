@@ -1,0 +1,227 @@
+---
+import { Image } from 'astro:assets'
+import Base from '@/layouts/Base.astro'
+import Icon from '@/components/Icon.astro'
+import CorpHeading from '@/components/corp/CorpHeading.astro'
+import { services, type Service, type SubService } from '@/data/services'
+import { getCase } from '@/data/cases'
+import { caseImage } from '@/lib/caseImages'
+import { faqPage, subServiceSchema } from '@/lib/schema'
+
+export function getStaticPaths() {
+  return services.flatMap((family) =>
+    family.items.map((item) => ({ params: { family: family.slug, service: item.slug }, props: { family, item } })),
+  )
+}
+
+const { family, item } = Astro.props as { family: Service; item: SubService }
+const path = `/servicios/${family.slug}/${item.slug}/`
+const related = item.relatedCase ? getCase(item.relatedCase) : undefined
+const siblings = family.items.filter((it) => it.slug !== item.slug)
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Servicios', path: '/servicios/' },
+  { name: family.name, path: `/servicios/${family.slug}/` },
+  { name: item.name, path },
+]
+const stepIcons = ['search', 'contract', 'build', 'chart'] as const
+---
+
+<Base
+  corp
+  title={item.title}
+  description={item.metaDescription}
+  breadcrumbs={crumbs}
+  schema={[subServiceSchema(family, item), faqPage(item.faqs, path)]}
+>
+  <!-- Portada -->
+  <section class="border-b border-rule">
+    <div class="wrap pb-16 pt-10 lg:pb-20">
+      <nav aria-label="Ruta" class="text-[14px] text-text-3">
+        <ol class="flex flex-wrap items-center gap-2">
+          {
+            crumbs.map((c, i) => (
+              <li class="flex items-center gap-2">
+                {i > 0 && <span aria-hidden="true">/</span>}
+                {i < crumbs.length - 1 ? <a href={c.path} class="hover:text-navy">{c.name}</a> : <span aria-current="page" class="text-navy">{c.name}</span>}
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+
+      <div class="mt-10 grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+        <div>
+          <p class="flex items-center gap-2 text-teal"><Icon name={item.icon} class="size-5" /><span class="kicker">{family.name}</span></p>
+          <h1 class="mt-5 text-[clamp(34px,4.4vw,54px)] leading-[1.08]">{item.name}</h1>
+          <p class="mt-5 max-w-2xl text-xl leading-relaxed text-text-2">{item.promise}</p>
+          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a href="/contacto/" class="btn btn-navy">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>
+            <a href={`/servicios/${family.slug}/`} class="btn btn-outline">Ver toda la línea</a>
+          </div>
+        </div>
+
+        <!-- En 30 segundos -->
+        <aside class="self-start rounded-2xl bg-navy p-7 text-white" aria-labelledby="resumen">
+          <p id="resumen" class="text-[13px] font-semibold uppercase tracking-[0.08em] text-cyan">En 30 segundos</p>
+          <ul class="mt-5 grid gap-4">
+            {
+              item.summary.map((line) => (
+                <li class="flex gap-3">
+                  <Icon name="check" class="mt-1 size-5 shrink-0 text-cyan" />
+                  <span class="text-[17px] leading-snug">{line}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-6 border-t border-white/10 pt-5 text-[14px] leading-relaxed text-mist">
+            <span class="font-semibold text-white">Para quién:</span> {item.audience}
+          </p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problemas e incluye -->
+  <section class="section" aria-label="Qué resolvemos y qué incluye">
+    <div class="wrap grid gap-8 lg:grid-cols-2">
+      <div class="card p-8" data-reveal>
+        <p class="kicker">Qué resolvemos</p>
+        <h2 class="mt-3 text-2xl">Si esto te pasa, este servicio es para ti</h2>
+        <ul class="mt-6 grid gap-4">
+          {
+            item.problems.map((p) => (
+              <li class="flex gap-3 leading-relaxed text-text-2">
+                <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-teal" aria-hidden="true" />
+                {p}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="card p-8" data-reveal>
+        <p class="kicker">Qué incluye</p>
+        <h2 class="mt-3 text-2xl">Lo que hacemos</h2>
+        <ul class="mt-6 grid gap-4">
+          {
+            item.includes.map((p) => (
+              <li class="flex gap-3 leading-relaxed text-text-2">
+                <Icon name="check" class="mt-0.5 size-5 shrink-0 text-teal" />
+                {p}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cómo funciona -->
+  <section class="section border-y border-rule bg-surface" aria-labelledby="como">
+    <div class="wrap">
+      <CorpHeading id="como" kicker="Cómo funciona" title="Cuatro pasos, por escrito desde el inicio." />
+      <ol class="mt-12 grid gap-px overflow-hidden rounded-2xl border border-rule bg-rule md:grid-cols-2 lg:grid-cols-4">
+        {
+          family.steps.map((st, i) => (
+            <li class="bg-white p-7" data-reveal>
+              <div class="flex items-center justify-between">
+                <span class="flex size-10 items-center justify-center rounded-full bg-navy text-[15px] font-semibold text-white">{i + 1}</span>
+                <Icon name={stepIcons[i % stepIcons.length]} class="size-6 text-teal" />
+              </div>
+              <h3 class="mt-6 text-lg">{st.title}</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-text-2">{st.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="mt-10 flex flex-col gap-4 rounded-2xl border border-rule bg-white p-7 md:flex-row md:items-center md:justify-between" data-reveal>
+        <div>
+          <p class="kicker">Entregables</p>
+          <ul class="mt-3 flex flex-wrap gap-2">
+            {item.deliverables.map((d) => <li class="rounded-full bg-surface px-3 py-1.5 text-[14px] text-text-2 ring-1 ring-rule">{d}</li>)}
+          </ul>
+        </div>
+        <a href="/contacto/" class="btn btn-navy btn-sm shrink-0">Pide una propuesta</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Caso relacionado -->
+  {
+    related && (
+      <section class="section" aria-labelledby="caso">
+        <div class="wrap">
+          <CorpHeading id="caso" kicker="Caso relacionado" title="Así se ve en la práctica." />
+          <a href={`/casos/${related.slug}/`} class="card mt-10 grid overflow-hidden md:grid-cols-[1.1fr_1fr]" data-reveal>
+            {related.cover ? (
+              <Image src={caseImage(related.cover.file)} alt={related.cover.alt} widths={[640, 960]} sizes="(min-width: 768px) 600px, 100vw" class="h-full max-h-[380px] w-full object-cover object-top" />
+            ) : (
+              <div class="grid-lines flex min-h-[240px] items-end bg-navy p-8" aria-hidden="true">
+                <span class="text-[13px] font-semibold uppercase tracking-[0.08em] text-cyan">{related.tech.join(' · ')}</span>
+              </div>
+            )}
+            <div class="flex flex-col p-8">
+              <p class="kicker">{related.client}</p>
+              <h3 class="mt-3 text-2xl leading-snug">{related.title}</h3>
+              <p class="mt-3 leading-relaxed text-text-2">{related.summary}</p>
+              <span class="link-arrow mt-auto pt-6">Ver el caso completo →</span>
+            </div>
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Preguntas frecuentes -->
+  <section class:list={['section', !related && 'pt-[clamp(72px,10vw,136px)]']} aria-labelledby="faq">
+    <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
+      <CorpHeading id="faq" kicker="Preguntas frecuentes" title={`Sobre ${item.name.toLowerCase()}`} />
+      <div class="divide-y divide-rule border-y border-rule">
+        {
+          item.faqs.map((f, i) => (
+            <details class="group py-5" open={i === 0}>
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden">
+                <h3 class="text-lg">{f.q}</h3>
+                <span class="flex size-8 shrink-0 items-center justify-center rounded-full border border-rule text-teal transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+              </summary>
+              <p class="mt-3 max-w-2xl leading-relaxed text-text-2">{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Otros servicios de la línea -->
+  <section class="pb-[clamp(72px,10vw,136px)]" aria-labelledby="otros">
+    <div class="wrap">
+      <h2 id="otros" class="text-xl">Más servicios de {family.name}</h2>
+      <div class="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {
+          siblings.map((o) => (
+            <a href={`/servicios/${family.slug}/${o.slug}/`} class="card flex items-start gap-4 p-5">
+              <span class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface text-teal">
+                <Icon name={o.icon} class="size-5" />
+              </span>
+              <span>
+                <span class="block font-semibold">{o.name}</span>
+                <span class="mt-1 block text-[14px] leading-snug text-text-3">{o.short}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Cierre -->
+  <section class="on-dark grid-lines bg-navy text-white" aria-labelledby="cierre">
+    <div class="wrap flex flex-col items-start justify-between gap-8 py-20 lg:flex-row lg:items-center">
+      <div class="max-w-2xl">
+        <h2 id="cierre" class="text-[clamp(28px,3.4vw,40px)] leading-tight text-white">¿Hablamos de {item.name.toLowerCase()}?</h2>
+        <p class="mt-4 text-lg text-mist">Te respondemos en menos de 48 horas, sin compromiso.</p>
+      </div>
+      <a href="/contacto/" class="btn btn-white shrink-0">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,113 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content'
+import { Image, getImage } from 'astro:assets'
+import Base from '@/layouts/Base.astro'
+import { founder, site } from '@/data/site'
+import { services } from '@/data/services'
+import { ORG_ID, PERSON_ID } from '@/lib/schema'
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  )
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, more: posts.filter((p) => p.id !== post.id).slice(0, 3) } }))
+}
+
+const { post, more } = Astro.props as { post: CollectionEntry<'blog'>; more: CollectionEntry<'blog'>[] }
+const { Content } = await render(post)
+const path = `/blog/${post.id}/`
+const fmt = (d: Date) => d.toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+const words = (post.body ?? '').split(/\s+/).length
+const minutes = Math.max(1, Math.round(words / 220))
+const og = post.data.cover ? await getImage({ src: post.data.cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' }) : undefined
+
+// Servicio relacionado según la categoría del artículo
+const byCategory: Record<string, string> = {
+  IA: 'desarrollo-de-software',
+  'Desarrollo de Software': 'desarrollo-de-software',
+  Automatización: 'automatizaciones',
+  Ciberseguridad: 'ciberseguridad',
+  Staffing: 'staffing',
+}
+const service = services.find((s) => s.slug === byCategory[post.data.category])
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+  { name: post.data.title, path },
+]
+const article = {
+  '@type': 'BlogPosting',
+  '@id': `${new URL(path, site.url)}#article`,
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  inLanguage: site.locale,
+  author: post.data.author === founder.name ? { '@id': PERSON_ID } : { '@type': 'Person', name: post.data.author },
+  publisher: { '@id': ORG_ID },
+  mainEntityOfPage: new URL(path, site.url).toString(),
+  articleSection: post.data.category,
+  keywords: post.data.tags.join(', '),
+  ...(og ? { image: new URL(og.src, site.url).toString() } : {}),
+}
+---
+
+<Base corp title={post.data.title} description={post.data.description} pageType="ItemPage" breadcrumbs={crumbs} image={og?.src} schema={[article]}>
+  <article>
+    <header class="border-b border-rule">
+      <div class="wrap max-w-3xl py-12 lg:py-16">
+        <nav aria-label="Ruta" class="text-[14px] text-text-3">
+          <a href="/blog/" class="hover:text-navy">Blog</a> / <span>{post.data.category}</span>
+        </nav>
+        <h1 class="mt-6 text-[clamp(32px,4vw,48px)] leading-[1.1]">{post.data.title}</h1>
+        <p class="mt-5 text-xl leading-relaxed text-text-2">{post.data.description}</p>
+        <p class="mt-6 text-[14px] text-text-3">
+          {post.data.author} · <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time> · {minutes} min de lectura
+        </p>
+      </div>
+    </header>
+    {
+      post.data.cover && (
+        <div class="wrap max-w-4xl pt-10">
+          <Image src={post.data.cover} alt={post.data.coverAlt ?? ''} width={1200} class="w-full rounded-2xl" loading="eager" />
+        </div>
+      )
+    }
+    <div class="wrap max-w-3xl py-12">
+      <div class="prose-corp"><Content /></div>
+    </div>
+  </article>
+
+  {
+    service && (
+      <aside class="wrap max-w-3xl pb-16" aria-label="Servicio relacionado">
+        <a href={`/servicios/${service.slug}/`} class="card flex flex-col gap-2 p-7 sm:flex-row sm:items-center sm:justify-between">
+          <span>
+            <span class="kicker">Servicio relacionado</span>
+            <span class="mt-1 block text-xl font-semibold">{service.name}</span>
+            <span class="mt-1 block text-text-2">{service.short}</span>
+          </span>
+          <span class="link-arrow shrink-0">Conocer más →</span>
+        </a>
+      </aside>
+    )
+  }
+
+  {
+    more.length > 0 && (
+      <section class="border-t border-rule bg-surface py-16" aria-labelledby="mas">
+        <div class="wrap">
+          <h2 id="mas" class="text-2xl">Sigue leyendo</h2>
+          <div class="mt-8 grid gap-5 md:grid-cols-3">
+            {more.map((p) => (
+              <a href={`/blog/${p.id}/`} class="card p-6">
+                <span class="kicker">{p.data.category}</span>
+                <span class="mt-2 block text-lg font-semibold leading-snug">{p.data.title}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</Base>

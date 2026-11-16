@@ -1,0 +1,94 @@
+---
+import { getCollection } from 'astro:content'
+import Base from '@/layouts/Base.astro'
+import Icon from '@/components/Icon.astro'
+import CorpHeading from '@/components/corp/CorpHeading.astro'
+import { glossary } from '@/data/glossary'
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3)
+const termCount = glossary.reduce((n, g) => n + g.terms.length, 0)
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Recursos', path: '/recursos/' },
+]
+const tools = [
+  { name: 'Madurez en IA', href: '/diagnosticos/madurez-ia/', body: 'Puntaje por área y por dónde empezar.', icon: 'chart' as const },
+  { name: 'Autoevaluación de ciberseguridad', href: '/diagnosticos/ciberseguridad/', body: 'Tu nivel de riesgo y las acciones urgentes.', icon: 'shield' as const },
+  { name: 'Calculadora de ahorro', href: '/diagnosticos/calculadora-ahorro/', body: 'Cuánto te cuesta hoy un proceso manual.', icon: 'price' as const },
+]
+---
+
+<Base
+  corp
+  title="Recursos: blog, glosario y diagnósticos gratuitos"
+  description="Artículos, glosario de IA y diagnósticos gratuitos para medir tu madurez en IA, tu riesgo en ciberseguridad y el ahorro de automatizar."
+  pageType="CollectionPage"
+  breadcrumbs={crumbs}
+>
+  <section class="border-b border-rule">
+    <div class="wrap py-14 lg:py-20">
+      <p class="kicker">Recursos</p>
+      <h1 class="mt-4 max-w-3xl text-[clamp(34px,4.4vw,52px)] leading-[1.08]">Aprende, mide y decide con datos</h1>
+      <p class="mt-5 max-w-2xl text-lg text-text-2">Contenido práctico y herramientas gratuitas para dar el primer paso con la IA.</p>
+    </div>
+  </section>
+
+  {
+    posts.length > 0 && (
+      <section class="section" aria-labelledby="blog">
+        <div class="wrap">
+          <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <CorpHeading id="blog" kicker="Blog" title="Lo último que publicamos" />
+            <a href="/blog/" class="link-arrow shrink-0">Ver todos los artículos →</a>
+          </div>
+          <div class="mt-10 grid gap-5 md:grid-cols-3">
+            {posts.map((p) => (
+              <a href={`/blog/${p.id}/`} class="card flex flex-col p-6" data-reveal>
+                <span class="kicker">{p.data.category}</span>
+                <span class="mt-2 text-lg font-semibold leading-snug">{p.data.title}</span>
+                <span class="mt-2 text-[15px] text-text-2">{p.data.description}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class:list={['section', posts.length > 0 && 'border-t border-rule bg-surface']} aria-labelledby="herramientas">
+    <div class="wrap">
+      <CorpHeading id="herramientas" kicker="Diagnósticos gratuitos" title="Mide dónde estás en minutos" />
+      <div class="mt-10 grid gap-5 md:grid-cols-3">
+        {
+          tools.map((t) => (
+            <a href={t.href} class="card flex flex-col p-7" data-reveal>
+              <span class="flex size-11 items-center justify-center rounded-lg bg-surface text-teal"><Icon name={t.icon} class="size-6" /></span>
+              <span class="mt-5 text-xl font-semibold">{t.name}</span>
+              <span class="mt-2 text-text-2">{t.body}</span>
+              <span class="link-arrow mt-auto pt-6">Empezar →</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section pt-0" aria-label="Glosario y formación">
+    <div class="wrap grid gap-5 md:grid-cols-2">
+      <a href="/recursos/glosario/" class="card flex flex-col p-8" data-reveal>
+        <span class="flex size-11 items-center justify-center rounded-lg bg-surface text-teal"><Icon name="book" class="size-6" /></span>
+        <span class="mt-5 text-2xl font-semibold">Glosario de IA</span>
+        <span class="mt-2 text-text-2">{termCount} términos de IA, automatización y ciberseguridad, explicados en simple.</span>
+        <span class="link-arrow mt-6">Ver el glosario →</span>
+      </a>
+      <a href="https://headlandx.com" target="_blank" rel="noopener" class="card flex flex-col p-8" data-reveal>
+        <span class="flex size-11 items-center justify-center rounded-lg bg-surface text-teal"><Icon name="team" class="size-6" /></span>
+        <span class="mt-5 text-2xl font-semibold">Formación en IA</span>
+        <span class="mt-2 text-text-2">Programas para que directivos y equipos usen agentes de IA en su trabajo real, con Headland.</span>
+        <span class="link-arrow mt-6">Ir a headlandx.com ↗</span>
+      </a>
+    </div>
+  </section>
+</Base>

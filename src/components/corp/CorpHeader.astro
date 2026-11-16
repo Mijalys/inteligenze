@@ -1,17 +1,22 @@
 ---
-// Cabecera corporativa: blanca, fija arriba, con Servicios desplegable y un botón sólido de contacto.
+// Cabecera corporativa: blanca y fija. Servicios abre un menú grande con las 4 líneas;
+// Recursos abre un menú corto. Botón sólido "Contactar" siempre visible.
 import { Image } from 'astro:assets'
+import { getCollection } from 'astro:content'
 import logo from '@/assets/logo-on-light.png'
 import Icon from '@/components/Icon.astro'
 import { nav } from '@/data/site'
 import { services } from '@/data/services'
 
 const path = Astro.url.pathname
+const hasPosts = (await getCollection('blog', ({ data }) => !data.draft)).length > 0
 const isActive = (href: string) => path === href || path.startsWith(href)
 const link = (href: string) => [
   'flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-[15px] font-medium transition-colors',
   isActive(href) ? 'text-navy' : 'text-text-2 hover:text-navy',
 ]
+const childrenOf = (href: string) => (nav.find((n) => n.href === href)?.children ?? []).filter((c) => c.href !== '/blog/' || hasPosts)
+const panel = 'invisible opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 group-[.is-open]:visible group-[.is-open]:opacity-100'
 ---
 
 <header class="sticky top-0 z-40 border-b border-rule bg-white/95 backdrop-blur">
@@ -23,40 +28,70 @@ const link = (href: string) => [
     <nav aria-label="Principal" class="hidden lg:block">
       <ul class="flex items-center gap-1">
         {
-          nav.map((item) =>
-            item.href === '/servicios/' ? (
-              <li class="group relative" data-dropdown>
-                <button type="button" class:list={link(item.href)} aria-expanded="false" aria-controls="menu-servicios" data-dropdown-button>
-                  {item.label}
-                  <Icon name="chevron" class="size-4 transition-transform group-hover:rotate-180 group-[.is-open]:rotate-180" />
-                </button>
-                <div
-                  id="menu-servicios"
-                  class="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 group-[.is-open]:visible group-[.is-open]:opacity-100"
-                >
-                  <div class="w-[520px] rounded-xl border border-rule bg-white p-2 shadow-[0_24px_60px_rgb(5_11_28/0.14)]">
-                    <ul class="grid">
-                      {services.map((s) => (
+          nav.map((item) => {
+            if (item.href === '/servicios/')
+              return (
+                <li class="group" data-dropdown>
+                  <button type="button" class:list={link(item.href)} aria-expanded="false" aria-controls="menu-servicios" data-dropdown-button>
+                    {item.label}
+                    <Icon name="chevron" class="size-4 transition-transform group-hover:rotate-180 group-[.is-open]:rotate-180" />
+                  </button>
+                  <!-- Menú grande: ocupa el ancho de la cabecera -->
+                  <div id="menu-servicios" class:list={['absolute inset-x-0 top-full z-50', panel]}>
+                    <div class="border-b border-rule bg-white shadow-[0_30px_60px_rgb(5_11_28/0.12)]">
+                      <div class="wrap grid grid-cols-4 gap-8 py-9">
+                        {services.map((f) => (
+                          <div>
+                            <a href={`/servicios/${f.slug}/`} class="group/f flex items-center gap-2.5 border-b border-rule pb-3">
+                              <span class="flex size-8 items-center justify-center rounded-md bg-surface text-teal">
+                                <Icon name={f.icon} class="size-[18px]" />
+                              </span>
+                              <span class="font-semibold text-navy group-hover/f:text-teal">{f.name}</span>
+                            </a>
+                            <ul class="mt-3 grid gap-1">
+                              {f.items.map((it) => (
+                                <li>
+                                  <a href={`/servicios/${f.slug}/${it.slug}/`} class="block rounded-md px-2 py-1.5 text-[15px] text-text-2 hover:bg-surface hover:text-navy">
+                                    {it.name}
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                      <div class="border-t border-rule bg-surface">
+                        <div class="wrap flex items-center justify-between py-4 text-[14px]">
+                          <span class="text-text-3">Alcance, fecha y precio acordados antes de empezar.</span>
+                          <a href="/servicios/" class="font-semibold text-teal hover:underline">Ver todos los servicios →</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              )
+            if (item.children)
+              return (
+                <li class="group relative" data-dropdown>
+                  <button type="button" class:list={link(item.href)} aria-expanded="false" aria-controls={`menu-${item.href.replaceAll('/', '')}`} data-dropdown-button>
+                    {item.label}
+                    <Icon name="chevron" class="size-4 transition-transform group-hover:rotate-180 group-[.is-open]:rotate-180" />
+                  </button>
+                  <div id={`menu-${item.href.replaceAll('/', '')}`} class:list={['absolute left-0 top-full z-50 pt-2', panel]}>
+                    <ul class="w-[340px] rounded-xl border border-rule bg-white p-2 shadow-[0_24px_60px_rgb(5_11_28/0.14)]">
+                      {childrenOf(item.href).map((c) => (
                         <li>
-                          <a href={`/servicios/${s.slug}/`} class="flex gap-4 rounded-lg p-4 transition-colors hover:bg-surface">
-                            <span class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface text-teal">
-                              <Icon name={s.icon} class="size-5" />
-                            </span>
-                            <span>
-                              <span class="block font-semibold text-navy">{s.name}</span>
-                              <span class="mt-0.5 block text-[14px] leading-snug text-text-3">{s.short}</span>
-                            </span>
+                          <a href={c.href} class="block rounded-lg p-3 hover:bg-surface">
+                            <span class="block font-semibold text-navy">{c.label}</span>
+                            <span class="mt-0.5 block text-[14px] text-text-3">{c.description}</span>
                           </a>
                         </li>
                       ))}
                     </ul>
-                    <a href="/servicios/" class="mt-1 flex items-center justify-between border-t border-rule px-4 pb-2 pt-3 text-[14px] font-semibold text-teal">
-                      Ver todos los servicios <span aria-hidden="true">→</span>
-                    </a>
                   </div>
-                </div>
-              </li>
-            ) : (
+                </li>
+              )
+            return (
               <li>
                 <a
                   href={item.href}
@@ -68,8 +103,8 @@ const link = (href: string) => [
                   {item.external && <><span class="text-[12px] text-text-3" aria-hidden="true">↗</span><span class="sr-only"> (se abre en otra pestaña)</span></>}
                 </a>
               </li>
-            ),
-          )
+            )
+          })
         }
       </ul>
     </nav>
@@ -81,26 +116,44 @@ const link = (href: string) => [
           <svg class="size-5 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
           <svg class="hidden size-5 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
         </summary>
-        <div class="absolute right-0 top-14 max-h-[80vh] w-[min(88vw,340px)] overflow-y-auto rounded-xl border border-rule bg-white p-2 shadow-[0_24px_60px_rgb(5_11_28/0.14)]">
+        <div class="absolute right-0 top-14 max-h-[80vh] w-[min(88vw,360px)] overflow-y-auto rounded-xl border border-rule bg-white p-2 shadow-[0_24px_60px_rgb(5_11_28/0.14)]">
           <ul class="grid">
             {
               nav.map((item) => (
                 <li>
-                  <a href={item.href} class="flex items-center gap-2 rounded-lg px-4 py-3 font-medium text-navy hover:bg-surface" {...(item.external ? { target: '_blank', rel: 'noopener' } : {})}>
-                    {item.label}
-                    {item.external && <span class="text-[12px] text-text-3" aria-hidden="true">↗</span>}
-                  </a>
-                  {item.href === '/servicios/' && (
-                    <ul class="mb-1 ml-4 grid border-l border-rule pl-2">
-                      {services.map((s) => (
-                        <li>
-                          <a href={`/servicios/${s.slug}/`} class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px] text-text-2 hover:bg-surface">
-                            <Icon name={s.icon} class="size-5 text-teal" />
-                            {s.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+                  {item.href === '/servicios/' ? (
+                    <details class="group/s">
+                      <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-4 py-3 font-medium text-navy hover:bg-surface [&::-webkit-details-marker]:hidden">
+                        {item.label}
+                        <Icon name="chevron" class="size-4 transition-transform group-open/s:rotate-180" />
+                      </summary>
+                      <ul class="mb-1 ml-4 grid border-l border-rule pl-2">
+                        {services.map((f) => (
+                          <li>
+                            <a href={`/servicios/${f.slug}/`} class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px] text-text-2 hover:bg-surface">
+                              <Icon name={f.icon} class="size-5 text-teal" />
+                              {f.name}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  ) : item.children ? (
+                    <>
+                      <span class="block px-4 pb-1 pt-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-text-3">{item.label}</span>
+                      <ul class="mb-1 grid">
+                        {childrenOf(item.href).map((c) => (
+                          <li>
+                            <a href={c.href} class="block rounded-lg px-4 py-2.5 text-[15px] text-navy hover:bg-surface">{c.label}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : (
+                    <a href={item.href} class="flex items-center gap-2 rounded-lg px-4 py-3 font-medium text-navy hover:bg-surface" {...(item.external ? { target: '_blank', rel: 'noopener' } : {})}>
+                      {item.label}
+                      {item.external && <span class="text-[12px] text-text-3" aria-hidden="true">↗</span>}
+                    </a>
                   )}
                 </li>
               ))

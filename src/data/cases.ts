@@ -32,8 +32,8 @@ export type Case = {
 }
 
 export const serviceLabels: Record<Case['services'][number], string> = {
-  fabrica: 'Fábrica con IA',
-  automatizacion: 'Automatización con IA',
+  fabrica: 'Desarrollo de Software',
+  automatizacion: 'Automatizaciones',
   producto: 'Producto digital',
 }
 

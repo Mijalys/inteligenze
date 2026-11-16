@@ -79,8 +79,49 @@ const stepIcons = ['search', 'contract', 'build', 'chart'] as const
     </div>
   </section>
 
+  <!-- Servicios de la línea -->
+  <section class="section" aria-labelledby="servicios-linea">
+    <div class="wrap">
+      <CorpHeading id="servicios-linea" kicker={`${service.items.length} servicios`} title={`Qué hacemos en ${service.name}`} />
+      <div class:list={['mt-12 grid gap-5 md:grid-cols-2', service.items.length > 2 && 'lg:grid-cols-3']}>
+        {
+          service.items.map((it) => (
+            <a href={`/servicios/${service.slug}/${it.slug}/`} class="card group flex flex-col p-7" data-reveal>
+              <span class="flex size-11 items-center justify-center rounded-lg bg-surface text-teal">
+                <Icon name={it.icon} class="size-6" />
+              </span>
+              <h3 class="mt-6 text-xl">{it.name}</h3>
+              <p class="mt-2 leading-relaxed text-text-2">{it.short}</p>
+              <ul class="mt-5 grid gap-2 border-t border-rule pt-5 text-[14px] text-text-2">
+                {it.summary.map((l) => (
+                  <li class="flex items-start gap-2"><Icon name="check" class="mt-0.5 size-4 shrink-0 text-teal" />{l}</li>
+                ))}
+              </ul>
+              <span class="link-arrow mt-auto pt-6">Ver {it.name.toLowerCase()} →</span>
+            </a>
+          ))
+        }
+      </div>
+      {
+        service.examples && (
+          <div class="mt-12 rounded-2xl border border-rule bg-surface p-7" data-reveal>
+            <h3 class="text-lg">Ejemplos de casos que automatizamos</h3>
+            <ul class="mt-5 grid gap-3 md:grid-cols-2">
+              {service.examples.map((e) => (
+                <li class="flex items-start gap-3 text-text-2">
+                  <Icon name="flow" class="mt-0.5 size-5 shrink-0 text-teal" />
+                  {e}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
   <!-- Problemas -->
-  <section class="section" aria-labelledby="problemas">
+  <section class="section border-y border-rule bg-surface" aria-labelledby="problemas">
     <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
       <CorpHeading id="problemas" kicker="Problemas que resuelve" title="Si esto te suena, podemos ayudarte." />
       <ul class="grid content-start gap-4 sm:grid-cols-2">
@@ -95,39 +136,6 @@ const stepIcons = ['search', 'contract', 'build', 'chart'] as const
           ))
         }
       </ul>
-    </div>
-  </section>
-
-  <!-- Entregables -->
-  <section class="section border-y border-rule bg-surface" aria-labelledby="entregamos">
-    <div class="wrap">
-      <CorpHeading id="entregamos" kicker="Qué entregamos" title="Lo que recibes al cerrar cada ciclo." />
-      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-        {
-          service.deliverables.map((d, i) => (
-            <div class="card border-t-[3px] border-t-teal p-6" data-reveal>
-              <span class="text-[13px] font-semibold text-text-3">0{i + 1}</span>
-              {d.title && <h3 class="mt-4 text-lg leading-snug">{d.title}</h3>}
-              <p class="mt-2 text-[15px] leading-relaxed text-text-2">{d.body}</p>
-            </div>
-          ))
-        }
-      </div>
-      {
-        service.examples && (
-          <div class="mt-12 rounded-2xl border border-rule bg-white p-7" data-reveal>
-            <h3 class="text-lg">Ejemplos de casos que automatizamos</h3>
-            <ul class="mt-5 grid gap-3 md:grid-cols-2">
-              {service.examples.map((e) => (
-                <li class="flex items-start gap-3 text-text-2">
-                  <Icon name="flow" class="mt-0.5 size-5 shrink-0 text-teal" />
-                  {e}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
     </div>
   </section>
 
@@ -215,7 +223,7 @@ const stepIcons = ['search', 'contract', 'build', 'chart'] as const
 
   <!-- Otros servicios -->
   <section class="pb-[clamp(72px,10vw,136px)]" aria-label="Otros servicios">
-    <div class="wrap grid gap-5 md:grid-cols-2">
+    <div class="wrap grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {
         others.map((o) => (
           <a href={`/servicios/${o.slug}/`} class="card flex items-center gap-5 p-6">

@@ -13,11 +13,17 @@ export function llmsIndex() {
 
 > ${site.description}
 
-${site.name} es una consultora de inteligencia artificial con sede en ${site.city}, ${site.countryName}, liderada por ${founder.name}. Ofrece tres servicios: Fábrica con IA (software y agentes de IA a medida), Automatización con IA (un proceso operativo a la vez) y Ciberseguridad (phishing y ataques potenciados por IA). Antes de empezar acuerda por escrito el alcance, la fecha y el precio de cada ciclo o caso. Atiende sobre todo a los sectores finanzas, automotriz y logística.
+${site.name} es una consultora de inteligencia artificial con sede en ${site.city}, ${site.countryName}, liderada por ${founder.name}. Ofrece cuatro líneas de servicio: Desarrollo de Software (agentes de IA, software a medida y diseño de producto), Automatizaciones (procesos, integración de sistemas e IA para documentos), Ciberseguridad (ethical hacking, pentesting, phishing as a service, red team, bug bounty y respuesta a incidentes) y Staffing (staff augmentation y equipos dedicados). Antes de empezar acuerda por escrito el alcance, la fecha y el precio de cada ciclo o caso. Atiende sobre todo a los sectores finanzas, automotriz y logística.
 
 ## Servicios
 
-${services.map((s) => `- [${s.name}](${u(`/servicios/${s.slug}/`)}): ${s.short}`).join('\n')}
+${services
+  .map(
+    (s) =>
+      `- [${s.name}](${u(`/servicios/${s.slug}/`)}): ${s.short}\n` +
+      s.items.map((it) => `  - [${it.name}](${u(`/servicios/${s.slug}/${it.slug}/`)}): ${it.short}`).join('\n'),
+  )
+  .join('\n')}
 
 ## Sectores
 
@@ -66,7 +72,26 @@ Cómo trabajamos:
 ${s.steps.map((st, i) => `${i + 1}. ${st.title}: ${st.body}`).join('\n')}
 
 Preguntas frecuentes:
-${s.faqs.map((f) => `- ${f.q} ${f.a}`).join('\n')}`,
+${s.faqs.map((f) => `- ${f.q} ${f.a}`).join('\n')}
+
+${s.items
+  .map(
+    (it) => `#### ${it.name}
+
+URL: ${u(`/servicios/${s.slug}/${it.slug}/`)}
+
+${it.promise} ${it.summary.join(' ')}
+
+Para quién: ${it.audience}
+
+Incluye:
+${it.includes.map((x) => `- ${x}`).join('\n')}
+
+Entregables: ${it.deliverables.join('; ')}.
+
+${it.faqs.map((f) => `- ${f.q} ${f.a}`).join('\n')}`,
+  )
+  .join('\n\n')}`,
     )
     .join('\n\n')
 
