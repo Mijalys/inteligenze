@@ -1,6 +1,6 @@
 ---
 import Base from '@/layouts/Base.astro'
-import PageHero from '@/components/PageHero.astro'
+import CorpPageHero from '@/components/corp/CorpPageHero.astro'
 import DiagnosticGate from '@/components/DiagnosticGate.astro'
 
 const crumbs = [
@@ -27,32 +27,31 @@ const answers = [
 ---
 
 <Base
-  calm
   title="Autoevaluación de ciberseguridad y riesgo de phishing"
   description="Ocho preguntas para medir la exposición de tu empresa frente a phishing, accesos y respuesta a incidentes. Nivel de riesgo y acciones urgentes, gratis."
   breadcrumbs={crumbs}
 >
-  <PageHero
-    eyebrow="Diagnóstico gratuito"
+  <CorpPageHero
+    kicker="Diagnóstico gratuito"
     title="¿Qué tan expuesta está tu empresa?"
     lead="Ocho preguntas sobre phishing, accesos y respuesta a incidentes. Recibes tu nivel de riesgo y las acciones más urgentes."
     crumbs={crumbs}
   />
 
-  <section class="section pt-0" data-tool-root>
+  <section class="section bg-surface" data-tool-root>
     <div class="wrap grid gap-8 lg:grid-cols-[1.4fr_1fr]">
       <form class="grid gap-4" data-quiz>
         {
           questions.map((item, i) => (
-            <fieldset class="glass p-6">
+            <fieldset class="card p-6">
               <legend class="sr-only">Pregunta {i + 1}</legend>
-              <p class="font-mono text-[12px] text-cyan">0{i + 1}</p>
+              <p class="text-[12px] font-semibold tracking-[0.08em] text-teal">0{i + 1}</p>
               <p class="mt-3 text-lg">{item.q}</p>
               <div class="mt-4 flex flex-wrap gap-2">
                 {answers.map((a) => (
                   <label class="cursor-pointer">
                     <input class="peer sr-only" type="radio" name={`q${i}`} value={a.risk} required />
-                    <span class="chip peer-checked:border-cyan peer-checked:bg-cyan/10 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-cyan">
+                    <span class="pill">
                       {a.label}
                     </span>
                   </label>
@@ -61,21 +60,21 @@ const answers = [
             </fieldset>
           ))
         }
-        <button type="submit" class="btn btn-primary justify-self-start">Evaluar mi riesgo <span class="arrow" aria-hidden="true">→</span></button>
+        <button type="submit" class="btn btn-navy justify-self-start">Evaluar mi riesgo <span class="arrow" aria-hidden="true">→</span></button>
       </form>
 
-      <div class="grid content-start gap-4 lg:sticky lg:top-8">
-        <div class="glass p-6 sm:p-8" aria-live="polite">
-          <p class="eyebrow">Tu nivel de riesgo</p>
-          <p class="mt-4 text-mist" data-empty>Responde las ocho preguntas para ver tu nivel de riesgo.</p>
+      <div class="grid content-start gap-4 lg:sticky lg:top-24">
+        <div class="card p-6 sm:p-8" aria-live="polite">
+          <h2 class="kicker">Tu nivel de riesgo</h2>
+          <p class="mt-4 text-text-2" data-empty>Responde las ocho preguntas para ver tu nivel de riesgo.</p>
           <div class="hidden" data-filled>
-            <p class="mt-4 text-5xl font-medium tracking-tight" data-level></p>
-            <p class="mt-3 text-mist" data-explain></p>
+            <p class="mt-4 text-5xl font-semibold tracking-tight text-navy" data-level></p>
+            <p class="mt-3 text-text-2" data-explain></p>
           </div>
         </div>
-        <div class="glass hidden p-6 sm:p-8" data-detail>
-          <h3 class="text-xl font-medium">Acciones más urgentes</h3>
-          <ol class="mt-4 grid list-decimal gap-3 pl-5 text-mist marker:text-cyan" data-actions></ol>
+        <div class="hidden rounded-2xl bg-navy p-6 text-white sm:p-8" data-detail>
+          <h2 class="text-xl font-semibold">Acciones más urgentes</h2>
+          <ol class="mt-4 grid list-decimal gap-3 pl-5 text-white/85 marker:text-cyan" data-actions></ol>
         </div>
         <DiagnosticGate tool="ciberseguridad" />
       </div>

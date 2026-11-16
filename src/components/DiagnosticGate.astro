@@ -7,10 +7,10 @@ interface Props {
 const { tool } = Astro.props
 ---
 
-<form class="glass hidden gap-5 p-6 sm:p-8" data-gate data-tool={tool} action="/api/contact/" method="post">
+<form class="card hidden gap-5 border-t-[3px] border-t-teal p-6 sm:p-8" data-gate data-tool={tool} action="/api/contact/" method="post">
   <div>
-    <h3 class="text-2xl font-medium tracking-tight">Recibe tu diagnóstico completo</h3>
-    <p class="mt-2 text-mist">Déjanos tus datos para ver el detalle y las recomendaciones.</p>
+    <h2 class="text-2xl">Recibe tu diagnóstico completo</h2>
+    <p class="mt-2 text-text-2">Déjanos tus datos para ver el detalle y las recomendaciones.</p>
   </div>
   <input type="hidden" name="origen" value={tool} />
   <input type="hidden" name="resultado" value="" data-result-field />
@@ -35,17 +35,17 @@ const { tool } = Astro.props
       <input class="field" id={`${tool}-cargo`} name="cargo" autocomplete="organization-title" maxlength="120" />
     </div>
   </div>
-  <label class="flex items-start gap-3 text-[15px] text-mist">
-    <input type="checkbox" name="privacidad" value="acepto" required class="mt-1 size-5 accent-cyan" />
-    <span>Acepto la <a class="link" href="/privacidad/">política de privacidad</a>.</span>
+  <label class="flex items-start gap-3 text-[15px] text-text-2">
+    <input type="checkbox" name="privacidad" value="acepto" required class="mt-1 size-5 accent-[#0e6f6b]" />
+    <span>Acepto la <a class="font-semibold text-teal underline underline-offset-2" href="/privacidad/">política de privacidad</a>.</span>
   </label>
-  <button type="submit" class="btn btn-cyan justify-self-start">Ver mi diagnóstico <span class="arrow" aria-hidden="true">→</span></button>
+  <button type="submit" class="btn btn-navy justify-self-start">Ver mi diagnóstico <span class="arrow" aria-hidden="true">→</span></button>
 </form>
 
-<div class="glass hidden p-6 sm:p-8" data-next>
-  <h3 class="text-2xl font-medium tracking-tight">Este es tu diagnóstico.</h3>
+<div class="hidden rounded-2xl bg-navy p-6 text-white sm:p-8" data-next>
+  <h2 class="text-2xl text-white">Este es tu diagnóstico.</h2>
   <p class="mt-2 text-mist">
     Si quieres revisarlo con un especialista y definir un plan, agenda una conversación de {site.meetingMinutes} minutos.
   </p>
-  <a href={site.calendarUrl ?? '/contacto/'} class="btn btn-primary mt-6">Agendar <span class="arrow" aria-hidden="true">→</span></a>
+  <a href={site.calendarUrl ?? '/contacto/'} class="btn btn-white mt-6">Agendar <span class="arrow" aria-hidden="true">→</span></a>
 </div>

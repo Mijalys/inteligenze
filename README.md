@@ -19,8 +19,10 @@ Todo el texto vive en `src/data/`, separado del diseño:
 
 | Archivo | Qué contiene |
 | --- | --- |
-| `src/data/site.ts` | Datos de la empresa, menú, propuesta, método y preguntas frecuentes del Inicio |
-| `src/data/services.ts` | Las tres páginas de servicio |
+| `src/data/site.ts` | Datos de la empresa, menú, propuesta, método y preguntas frecuentes (se muestran en Contacto) |
+| `src/data/services.ts` | Las 4 familias de servicio (Desarrollo de Software, Automatizaciones, Ciberseguridad, Staffing) y sus 14 servicios |
+| `src/data/glossary.ts` | Términos del glosario de IA |
+| `src/content/blog/` | Artículos del blog en Markdown. Copia `_plantilla.md`; el blog y su enlace en el menú aparecen solos con el primer artículo publicado |
 | `src/data/sectors.ts` | Finanzas, Automotriz y Logística |
 | `src/data/cases.ts` | Los casos: `kind: 'ia'` aparece como caso de IA y `'producto'` como trayectoria |
 
@@ -32,15 +34,15 @@ Para mostrar la foto de Mijalys Silva en el Inicio y en Nosotros, guárdala como
 
 ## Animaciones
 
-Los bloques entran al aparecer en pantalla (`src/layouts/Base.astro` y `src/styles/global.css`). Las páginas de Ciberseguridad y Finanzas usan un modo sobrio (`<Base calm>`). Nada se anima si la persona pidió menos movimiento en su sistema.
+Los bloques marcados con `data-reveal` aparecen con un desvanecido suave al entrar en pantalla (`src/layouts/Base.astro` y `src/styles/global.css`). Nada se anima si la persona pidió menos movimiento en su sistema.
 
 ## SEO y GEO
 
 - Título, descripción, URL canónica, Open Graph y Twitter en cada página (`src/layouts/Base.astro`).
-- Datos estructurados JSON-LD (`src/lib/schema.ts`): ProfessionalService, Person, WebSite, WebPage, BreadcrumbList, Service, FAQPage, ItemList y CreativeWork.
+- Datos estructurados JSON-LD (`src/lib/schema.ts`): ProfessionalService, Person, WebSite, WebPage, BreadcrumbList, Service, FAQPage, ItemList, CreativeWork, BlogPosting y DefinedTermSet.
 - `sitemap-index.xml` automático y `robots.txt` abierto a buscadores y a los rastreadores de IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended y otros).
 - `/llms.txt` y `/llms-full.txt`: resumen de la empresa en Markdown para asistentes de IA, generado con los mismos datos del sitio (`src/lib/llms.ts`).
-- Sitio estático: solo cargan JavaScript los diagnósticos, el formulario, el menú, las animaciones y el orbe.
+- Sitio estático: solo cargan JavaScript los diagnósticos, el formulario, el menú y las animaciones.
 
 ## Formulario y diagnósticos
 
@@ -54,10 +56,6 @@ Sin estas variables el formulario responde con un error y la persona ve el mensa
 
 ## Marca
 
-- Colores del design system "inteligenze": `ink #050b1c` y `brand-cyan #74fff6`, más `cyan-deep #107d78` para textos y foco sobre fondos claros. Están en `src/styles/global.css`.
-- Logo en `src/assets/`: `logo-on-dark.png` (el que usa el sitio) y `logo-on-light.png`.
-- Tipografía: Hanken Grotesk, como alternativa libre a PP Neue Montreal, la fuente de la referencia visual. Si compras la licencia de Neue Montreal, cambia `--font-sans` en `global.css`.
-
-## Créditos
-
-El orbe animado es [Fluid Orb de Rare UI](https://rareui.com), adaptado a un componente de Astro sin React (`src/components/FluidOrb.astro`). Solo se dibuja cuando está en pantalla. Su licencia exige mantener el aviso de copyright en ese archivo y el enlace a rareui.com en el pie de página.
+- Estilo corporativo claro. Colores del design system "inteligenze": navy `#050b1c` para texto y bandas, cian `#74fff6` solo sobre navy, y teal `#0e6f6b` para acentos sobre blanco. Están en `src/styles/global.css`.
+- Logo en `src/assets/`: `logo-on-light.png` en la cabecera y `logo-on-dark.png` en el pie.
+- Tipografía: Hanken Grotesk, como alternativa libre a PP Neue Montreal. Si compras la licencia de Neue Montreal, cambia `--font-sans` en `global.css`.

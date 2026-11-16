@@ -1,6 +1,6 @@
 ---
 import Base from '@/layouts/Base.astro'
-import PageHero from '@/components/PageHero.astro'
+import CorpPageHero from '@/components/corp/CorpPageHero.astro'
 import { site } from '@/data/site'
 
 interface Props {
@@ -13,15 +13,16 @@ const crumbs = [
   { name: 'Inicio', path: '/' },
   { name: title, path },
 ]
+const updated = new Date(site.lastUpdated).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
 ---
 
 <Base title={title} description={description} breadcrumbs={crumbs}>
-  <PageHero eyebrow="Legales" title={title} crumbs={crumbs}>
-    <p class="mt-6 text-[15px] text-muted">Última actualización: {new Date(site.lastUpdated).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}</p>
-  </PageHero>
-  <section class="section pt-0">
+  <CorpPageHero kicker="Legales" title={title} crumbs={crumbs}>
+    <p class="mt-6 text-[15px] text-text-3">Última actualización: {updated}</p>
+  </CorpPageHero>
+  <section class="section">
     <div class="wrap">
-      <div class="prose-ink max-w-3xl">
+      <div class="prose-corp max-w-3xl">
         <slot />
       </div>
     </div>

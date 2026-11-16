@@ -14,7 +14,7 @@ const fallback = site.email
   id={id}
   method="post"
   action="/api/contact/"
-  class="glass grid gap-5 p-6 sm:p-8"
+  class="card grid gap-5 p-6 sm:p-8"
   data-contact-form
   data-error={`No pudimos enviar el formulario. ${fallback}`}
 >
@@ -46,10 +46,10 @@ const fallback = site.email
     <legend class="label">Servicio de interés</legend>
     <div class="flex flex-wrap gap-2">
       {
-        [...services.map((s) => s.name), 'No lo sé aún'].map((label, i) => (
+        [...services.map((s) => s.name), 'No lo sé aún'].map((label) => (
           <label class="cursor-pointer">
             <input class="peer sr-only" type="radio" name="servicio" value={label} checked={label === 'No lo sé aún'} />
-            <span class="chip peer-checked:border-cyan peer-checked:bg-cyan/10 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-cyan">
+            <span class="inline-flex min-h-10 items-center rounded-full border border-rule bg-white px-4 text-[14px] text-text-2 transition-colors hover:border-navy peer-checked:border-navy peer-checked:bg-navy peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-teal">
               {label}
             </span>
           </label>
@@ -63,14 +63,14 @@ const fallback = site.email
     <textarea class="field min-h-36 resize-y" id={`${id}-reto`} name="reto" required maxlength="4000"></textarea>
   </div>
 
-  <label class="flex items-start gap-3 text-[15px] text-mist">
-    <input type="checkbox" name="privacidad" value="acepto" required class="mt-1 size-5 accent-cyan" />
-    <span>Acepto la <a class="link" href="/privacidad/">política de privacidad</a>.</span>
+  <label class="flex items-start gap-3 text-[15px] text-text-2">
+    <input type="checkbox" name="privacidad" value="acepto" required class="mt-1 size-5 accent-[#0e6f6b]" />
+    <span>Acepto la <a class="font-semibold text-teal underline underline-offset-2" href="/privacidad/">política de privacidad</a>.</span>
   </label>
 
   <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-    <button type="submit" class="btn btn-cyan">Enviar <span class="arrow" aria-hidden="true">→</span></button>
-    <p class="text-[15px] text-mist" role="status" aria-live="polite" data-status></p>
+    <button type="submit" class="btn btn-navy">Enviar <span class="arrow" aria-hidden="true">→</span></button>
+    <p class="text-[15px] text-text-2" role="status" aria-live="polite" data-status></p>
   </div>
 </form>
 

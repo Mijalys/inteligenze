@@ -1,6 +1,6 @@
 ---
 import Base from '@/layouts/Base.astro'
-import PageHero from '@/components/PageHero.astro'
+import CorpPageHero from '@/components/corp/CorpPageHero.astro'
 import DiagnosticGate from '@/components/DiagnosticGate.astro'
 
 const crumbs = [
@@ -55,28 +55,28 @@ const areas = [
   description="Mide en 3 minutos qué tan preparada está tu empresa para adoptar IA en datos, procesos, equipo y gobierno. Puntaje por área y recomendaciones gratuitas."
   breadcrumbs={crumbs}
 >
-  <PageHero
-    eyebrow="Diagnóstico gratuito"
+  <CorpPageHero
+    kicker="Diagnóstico gratuito"
     title="¿Qué tan preparada está tu empresa para la IA?"
     lead="Ocho preguntas sobre datos, procesos, equipo y gobierno. Recibes un puntaje por área y recomendaciones de por dónde empezar."
     crumbs={crumbs}
   />
 
-  <section class="section pt-0" data-tool-root>
+  <section class="section bg-surface" data-tool-root>
     <div class="wrap grid gap-8 lg:grid-cols-[1.4fr_1fr]">
       <form class="grid gap-4" data-quiz>
         {
           areas.map((a) =>
             a.questions.map((q, qi) => (
-              <fieldset class="glass p-6" data-area={a.id}>
+              <fieldset class="card p-6" data-area={a.id}>
                 <legend class="sr-only">{a.name}</legend>
-                <p class="font-mono text-[12px] uppercase tracking-[0.08em] text-cyan">{a.name}</p>
+                <p class="text-[12px] font-semibold uppercase tracking-[0.08em] text-teal">{a.name}</p>
                 <p class="mt-3 text-lg">{q}</p>
                 <div class="mt-4 flex flex-wrap gap-2">
                   {options.map((o, oi) => (
                     <label class="cursor-pointer">
                       <input class="peer sr-only" type="radio" name={`${a.id}-${qi}`} value={oi} required />
-                      <span class="chip peer-checked:border-cyan peer-checked:bg-cyan/10 peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-cyan">
+                      <span class="pill">
                         {o}
                       </span>
                     </label>
@@ -86,22 +86,22 @@ const areas = [
             )),
           )
         }
-        <button type="submit" class="btn btn-primary justify-self-start">Ver mi resultado <span class="arrow" aria-hidden="true">→</span></button>
+        <button type="submit" class="btn btn-navy justify-self-start">Ver mi resultado <span class="arrow" aria-hidden="true">→</span></button>
       </form>
 
-      <div class="grid content-start gap-4 lg:sticky lg:top-8">
-        <div class="glass p-6 sm:p-8" data-result aria-live="polite">
-          <p class="eyebrow">Tu resultado</p>
-          <p class="mt-4 text-mist" data-empty>Responde las ocho preguntas para ver tu puntaje.</p>
+      <div class="grid content-start gap-4 lg:sticky lg:top-24">
+        <div class="card p-6 sm:p-8" data-result aria-live="polite">
+          <h2 class="kicker">Tu resultado</h2>
+          <p class="mt-4 text-text-2" data-empty>Responde las ocho preguntas para ver tu puntaje.</p>
           <div class="hidden" data-filled>
-            <p class="mt-4 text-6xl font-medium tracking-tight"><span data-score>0</span><span class="text-2xl text-muted">/100</span></p>
+            <p class="mt-4 text-6xl font-semibold tracking-tight text-navy"><span data-score>0</span><span class="text-2xl text-text-3">/100</span></p>
             <p class="mt-2 text-xl" data-level></p>
             <ul class="mt-6 grid gap-3" data-areas></ul>
           </div>
         </div>
-        <div class="glass hidden p-6 sm:p-8" data-detail>
-          <h3 class="text-xl font-medium">Por dónde empezar</h3>
-          <ol class="mt-4 grid gap-4 text-mist" data-tips></ol>
+        <div class="hidden rounded-2xl bg-navy p-6 text-white sm:p-8" data-detail>
+          <h2 class="text-xl font-semibold">Por dónde empezar</h2>
+          <ol class="mt-4 grid gap-4 text-white/85" data-tips></ol>
         </div>
         <DiagnosticGate tool="madurez-ia" />
       </div>
@@ -143,8 +143,8 @@ const areas = [
     root.querySelector('[data-areas]')!.innerHTML = perArea
       .map(
         (a) => `<li>
-          <div class="flex justify-between text-[15px]"><span>${a.name}</span><span class="text-mist">${a.score}</span></div>
-          <div class="mt-1.5 h-2 rounded-full bg-white/10"><div class="h-2 rounded-full bg-cyan" style="width:${Math.max(a.score, 3)}%"></div></div>
+          <div class="flex justify-between text-[15px]"><span>${a.name}</span><span class="text-text-3">${a.score}</span></div>
+          <div class="mt-1.5 h-2 rounded-full bg-rule"><div class="h-2 rounded-full bg-teal" style="width:${Math.max(a.score, 3)}%"></div></div>
         </li>`,
       )
       .join('')
@@ -153,7 +153,7 @@ const areas = [
     const summary = `Puntaje ${total}/100 (${level}) · ${perArea.map((a) => `${a.name} ${a.score}`).join(', ')}`
     openGate(root, summary, () => {
       root.querySelector('[data-tips]')!.innerHTML = weakest
-        .map((a) => `<li><strong class="font-medium text-white">${a.name}.</strong> ${a.tip}</li>`)
+        .map((a) => `<li><strong class="font-semibold text-cyan">${a.name}.</strong> ${a.tip}</li>`)
         .join('')
       root.querySelector('[data-detail]')!.classList.remove('hidden')
     })

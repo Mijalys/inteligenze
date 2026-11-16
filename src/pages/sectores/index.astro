@@ -1,7 +1,8 @@
 ---
 import Base from '@/layouts/Base.astro'
-import PageHero from '@/components/PageHero.astro'
-import CtaBand from '@/components/CtaBand.astro'
+import Icon from '@/components/Icon.astro'
+import CorpPageHero from '@/components/corp/CorpPageHero.astro'
+import CorpCta from '@/components/corp/CorpCta.astro'
 import { sectors } from '@/data/sectors'
 
 const crumbs = [
@@ -16,31 +17,30 @@ const crumbs = [
   pageType="CollectionPage"
   breadcrumbs={crumbs}
 >
-  <PageHero
-    eyebrow="Sectores"
+  <CorpPageHero
+    kicker="Sectores"
     title="Conocemos tu industria."
     lead="Trabajamos con entidades financieras, empresas automotrices y operadores logísticos. Si tu industria no aparece aquí, el método es el mismo."
     crumbs={crumbs}
   />
 
-  <section class="section pt-0" aria-label="Sectores">
-    <div class="wrap grid gap-4 md:grid-cols-3">
+  <section class="section" aria-label="Sectores">
+    <div class="wrap grid gap-5 md:grid-cols-3">
       {
         sectors.map((s) => (
-          <article class="glass group relative flex flex-col p-7 hover:border-cyan/40">
-            <h2 class="text-3xl font-medium tracking-tight">
-              <a href={`/sectores/${s.slug}/`} class="after:absolute after:inset-0 after:rounded-[24px]">{s.name}</a>
-            </h2>
-            <p class="mt-3 text-mist">{s.headline}</p>
-            <ul class="mt-6 grid gap-2 text-[15px] text-mist">
-              {s.whatWeDo.map((w) => <li class="flex gap-3"><span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-cyan" aria-hidden="true" />{w}</li>)}
+          <a href={`/sectores/${s.slug}/`} class="card flex flex-col p-7" data-reveal>
+            <span class="flex size-12 items-center justify-center rounded-xl bg-navy text-cyan"><Icon name={s.icon} class="size-6" /></span>
+            <h2 class="mt-6 text-2xl">{s.name}</h2>
+            <p class="mt-2 leading-relaxed text-text-2">{s.headline}</p>
+            <ul class="mt-6 grid gap-2.5 border-t border-rule pt-6 text-[15px] text-text-2">
+              {s.whatWeDo.map((w) => <li class="flex items-start gap-2.5"><Icon name="check" class="mt-0.5 size-4 shrink-0 text-teal" />{w}</li>)}
             </ul>
-            <span class="mt-auto inline-flex items-center gap-2 pt-8 text-cyan">IA para {s.name.toLowerCase()} <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span></span>
-          </article>
+            <span class="link-arrow mt-auto pt-7">IA para {s.name.toLowerCase()} →</span>
+          </a>
         ))
       }
     </div>
   </section>
 
-  <CtaBand title="Cuéntanos tu operación." body="Te decimos dónde la IA da resultados primero en tu industria." primary={{ label: 'Hablemos', href: '/contacto/' }} />
+  <CorpCta title="Cuéntanos tu operación." body="Te decimos dónde la IA da resultados primero en tu industria." primary={{ label: 'Contactar', href: '/contacto/' }} />
 </Base>

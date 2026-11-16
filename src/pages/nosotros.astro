@@ -1,9 +1,10 @@
 ---
 import Base from '@/layouts/Base.astro'
-import PageHero from '@/components/PageHero.astro'
-import SectionHeading from '@/components/SectionHeading.astro'
-import CtaBand from '@/components/CtaBand.astro'
-import FounderPhoto from '@/components/FounderPhoto.astro'
+import Icon from '@/components/Icon.astro'
+import CorpPageHero from '@/components/corp/CorpPageHero.astro'
+import CorpHeading from '@/components/corp/CorpHeading.astro'
+import CorpCta from '@/components/corp/CorpCta.astro'
+import FounderCard from '@/components/corp/FounderCard.astro'
 import { founder, site } from '@/data/site'
 
 const crumbs = [
@@ -12,17 +13,17 @@ const crumbs = [
 ]
 
 const track = [
-  `Más de ${site.foundingYearsExperience} años liderando soluciones tecnológicas corporativas en banca, pagos y tecnología.`,
-  'Parte del batch de Google for Startups, categoría IA Generativa, con especialidad en diseño conversacional.',
-  'Agentes de IA en uso en los sectores financiero y logístico.',
-  'Trayectoria previa en Wayra (Fundación Telefónica).',
+  { big: `${site.foundingYearsExperience}+ años`, small: 'liderando soluciones tecnológicas en banca, pagos y tecnología' },
+  { big: 'Google for Startups', small: 'batch de IA Generativa, con especialidad en diseño conversacional' },
+  { big: 'Agentes en uso', small: 'en los sectores financiero y logístico' },
+  { big: 'Wayra', small: 'trayectoria previa con Fundación Telefónica' },
 ]
 
 const principles = [
-  { t: 'Resultados, no horas', b: 'Lo importante es lo que se entrega y se mide.' },
-  { t: 'Claridad antes de empezar', b: 'Alcance, fecha y precio por escrito.' },
-  { t: 'Personas al mando', b: 'La IA acelera, las personas deciden.' },
-  { t: 'Seguridad desde el diseño', b: 'Protegemos tus datos y tu operación.' },
+  { t: 'Resultados, no horas', b: 'Lo importante es lo que se entrega y se mide.', icon: 'chart' as const },
+  { t: 'Claridad antes de empezar', b: 'Alcance, fecha y precio por escrito.', icon: 'contract' as const },
+  { t: 'Personas al mando', b: 'La IA acelera, las personas deciden.', icon: 'users' as const },
+  { t: 'Seguridad desde el diseño', b: 'Protegemos tus datos y tu operación.', icon: 'shield' as const },
 ]
 
 const career = [
@@ -44,76 +45,72 @@ const career = [
   pageType="AboutPage"
   breadcrumbs={crumbs}
 >
-  <PageHero
-    eyebrow="Nosotros"
+  <CorpPageHero
+    kicker="Nosotros"
     title="Una consultora de IA que traduce tecnología en resultados."
-    lead="Inteligenze es una consultora de IA que diseña agentes y software a medida, automatiza procesos y refuerza la ciberseguridad de las empresas. Nuestro enfoque es simple: acordar qué se entrega, cuándo y a qué costo, y medir el resultado."
+    lead="Diseñamos agentes y software a medida, automatizamos procesos, protegemos la operación y sumamos talento. Acordamos qué se entrega, cuándo y a qué costo, y medimos el resultado."
     crumbs={crumbs}
   />
 
-  <section class="section pt-0" aria-labelledby="trayectoria">
-    <div class="wrap grid gap-10 lg:grid-cols-[1fr_1.4fr]">
-      <SectionHeading id="trayectoria" eyebrow="Nuestra trayectoria" title="Más de 12 años entre banca, pagos e IA." />
-      <ul class="grid gap-3">
-        {track.map((t) => <li class="glass flex gap-4 p-5 text-mist"><span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-cyan" aria-hidden="true" />{t}</li>)}
-      </ul>
-    </div>
+  <section class="border-b border-rule bg-surface" aria-label="Trayectoria">
+    <ul class="wrap grid grid-cols-2 gap-y-8 py-10 lg:grid-cols-4">
+      {
+        track.map((t, i) => (
+          <li class:list={['px-1 lg:px-6', i > 0 && 'lg:border-l lg:border-rule']}>
+            <p class="text-lg font-semibold">{t.big}</p>
+            <p class="mt-1 text-[14px] text-text-3">{t.small}</p>
+          </li>
+        ))
+      }
+    </ul>
   </section>
 
-  <section class="section pt-0" aria-labelledby="liderazgo">
-    <div class="wrap">
-      <div class="glass relative overflow-hidden p-7 sm:p-12">
-        <div class="glow-bottom" aria-hidden="true"></div>
-        <div class="relative grid gap-12 lg:grid-cols-[1fr_1.2fr]">
-          <div>
-            <FounderPhoto class="mb-8 size-36" />
-            <p class="eyebrow mb-5">Liderazgo</p>
-            <h2 id="liderazgo" class="sheen text-[clamp(32px,4vw,52px)]">{founder.name}</h2>
-            <p class="mt-2 text-lg text-mist">{founder.role}</p>
-            <div class="mt-8 text-lg text-mist">
-              <p>
-                Product Engineer con más de 12 años en banca y tecnología. Cubre el recorrido completo: entiende el problema de negocio y el comportamiento del usuario, rediseña el proceso, diseña la orquestación de agentes, construye el sistema y lo lleva a producción.
-              </p>
-              <p class="mt-4">
-                Construye con LangChain, Vertex AI, n8n, Copilot Studio, Power Automate y MCP, y aplica harness engineering para que los agentes sean predecibles, verificables y auditables. Participó en Wayra (Fundación Telefónica) con DUHEM, el primer e-commerce de comercio justo de Latinoamérica. Fue docente de Educación Continua en UX en Toulouse Lautrec entre 2019 y 2024, y es conferencista en IA.
-              </p>
-            </div>
-            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href={founder.linkedin} class="btn btn-ghost btn-sm" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a>
-              <a href={founder.portfolio} class="btn btn-ghost btn-sm" rel="noopener">Portafolio <span aria-hidden="true">↗</span></a>
-            </div>
-          </div>
-          <div>
-            <h3 class="eyebrow mb-5">Recorrido</h3>
-            <ol class="grid">
-              {
-                career.map((c) => (
-                  <li class="grid grid-cols-[1fr_auto] gap-4 border-b border-white/10 py-4">
-                    <span>
-                      <span class="block font-medium">{c.org}</span>
-                      <span class="block text-[15px] text-mist">{c.role}</span>
-                    </span>
-                    <span class="font-mono text-[13px] text-muted">{c.when}</span>
-                  </li>
-                ))
-              }
-            </ol>
-          </div>
+  <section class="section" aria-labelledby="liderazgo">
+    <div class="wrap grid gap-12 lg:grid-cols-[minmax(0,340px)_1fr_minmax(0,360px)] lg:gap-14">
+      <div class="mx-auto w-full max-w-[340px]" data-reveal><FounderCard /></div>
+      <div data-reveal>
+        <p class="kicker">Liderazgo</p>
+        <h2 id="liderazgo" class="mt-3 text-3xl">{founder.name}</h2>
+        <p class="text-text-3">{founder.role}</p>
+        <div class="mt-6 grid gap-4 leading-relaxed text-text-2">
+          <p>Product Engineer con más de 12 años en banca y tecnología. Cubre el recorrido completo: entiende el problema de negocio, rediseña el proceso, diseña la orquestación de agentes, construye el sistema y lo lleva a producción.</p>
+          <p>Construye con LangChain, Vertex AI, n8n, Copilot Studio, Power Automate y MCP, y aplica harness engineering para que los agentes sean predecibles, verificables y auditables.</p>
+          <p>Participó en Wayra (Fundación Telefónica) con DUHEM, el primer e-commerce de comercio justo de Latinoamérica. Fue docente de Educación Continua en UX en Toulouse Lautrec entre 2019 y 2024, y es conferencista en IA.</p>
         </div>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href={founder.linkedin} class="btn btn-outline btn-sm" rel="noopener">LinkedIn ↗</a>
+          <a href={founder.portfolio} class="btn btn-outline btn-sm" rel="noopener">Portafolio ↗</a>
+        </div>
+      </div>
+      <div data-reveal>
+        <p class="kicker">Recorrido</p>
+        <ol class="mt-3 border-t border-rule">
+          {
+            career.map((c) => (
+              <li class="grid grid-cols-[1fr_auto] gap-4 border-b border-rule py-3">
+                <span>
+                  <span class="block font-semibold">{c.org}</span>
+                  <span class="block text-[14px] text-text-3">{c.role}</span>
+                </span>
+                <span class="text-[13px] text-text-3">{c.when}</span>
+              </li>
+            ))
+          }
+        </ol>
       </div>
     </div>
   </section>
 
-  <section class="section pt-0" aria-labelledby="principios">
+  <section class="section border-t border-rule bg-surface" aria-labelledby="principios">
     <div class="wrap">
-      <SectionHeading id="principios" eyebrow="Nuestros principios" title="Cómo decidimos." />
-      <div class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <CorpHeading id="principios" kicker="Nuestros principios" title="Cómo decidimos" />
+      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {
-          principles.map((p, i) => (
-            <div class="glass p-7">
-              <span class="font-mono text-sm text-cyan">0{i + 1}</span>
-              <h3 class="mt-8 text-xl font-medium tracking-tight">{p.t}</h3>
-              <p class="mt-2 text-mist">{p.b}</p>
+          principles.map((p) => (
+            <div class="card p-7" data-reveal>
+              <span class="flex size-11 items-center justify-center rounded-lg bg-surface text-teal"><Icon name={p.icon} class="size-6" /></span>
+              <h3 class="mt-6 text-lg">{p.t}</h3>
+              <p class="mt-2 text-text-2">{p.b}</p>
             </div>
           ))
         }
@@ -121,5 +118,5 @@ const career = [
     </div>
   </section>
 
-  <CtaBand title="Conversemos sobre lo que tu empresa necesita." primary={{ label: 'Hablemos', href: '/contacto/' }} />
+  <CorpCta title="Conversemos sobre lo que tu empresa necesita." primary={{ label: 'Contactar', href: '/contacto/' }} />
 </Base>

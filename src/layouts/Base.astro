@@ -1,7 +1,5 @@
 ---
 import '@/styles/global.css'
-import Header from '@/components/Header.astro'
-import Footer from '@/components/Footer.astro'
 import CorpHeader from '@/components/corp/CorpHeader.astro'
 import CorpFooter from '@/components/corp/CorpFooter.astro'
 import { site } from '@/data/site'
@@ -17,10 +15,6 @@ interface Props {
   breadcrumbs?: { name: string; path: string }[]
   schema?: object[]
   noindex?: boolean
-  /** Animaciones sobrias, sin rebotes ni giros (páginas de ciberseguridad y finanzas) */
-  calm?: boolean
-  /** Estilo corporativo claro (rediseño) */
-  corp?: boolean
 }
 
 const {
@@ -32,8 +26,6 @@ const {
   breadcrumbs,
   schema = [],
   noindex = false,
-  calm = false,
-  corp = false,
 } = Astro.props
 
 const path = Astro.url.pathname
@@ -52,7 +44,7 @@ const ld = graph(
 ---
 
 <!doctype html>
-<html lang="es-PE" data-calm={calm || corp ? "" : undefined} class:list={[corp && "corp-root"]}>
+<html lang="es-PE">
   <head>
     <meta charset="utf-8" />
     <script is:inline>document.documentElement.classList.add('js')</script>
@@ -69,7 +61,7 @@ const ld = graph(
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="text/plain" title="Resumen para modelos de lenguaje" href="/llms.txt" />
-    <meta name="theme-color" content={corp ? "#ffffff" : "#050b1c"} />
+    <meta name="theme-color" content="#ffffff" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
@@ -88,21 +80,21 @@ const ld = graph(
 
     <script type="application/ld+json" set:html={JSON.stringify(ld)} />
   </head>
-  <body class:list={["min-h-dvh overflow-x-clip", corp && "corp"]}>
+  <body class="min-h-dvh overflow-x-clip">
     <a
       href="#contenido"
-      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-cyan focus:px-4 focus:py-3 focus:font-semibold focus:text-ink"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-navy focus:px-4 focus:py-3 focus:font-semibold focus:text-white"
       >Saltar al contenido</a
     >
-    {corp ? <CorpHeader /> : <Header />}
+    <CorpHeader />
     <main id="contenido">
       <slot />
     </main>
-    {corp ? <CorpFooter /> : <Footer />}
+    <CorpFooter />
     <script is:inline>
       // Animaciones de entrada: cada bloque entra al aparecer en pantalla, en cascada con sus vecinos.
       ;(function () {
-        var targets = document.querySelectorAll('main .glass, main [data-reveal]')
+        var targets = document.querySelectorAll('main [data-reveal]')
         var still = matchMedia('(prefers-reduced-motion: reduce)').matches
         function countUp(el) {
           var m = el.textContent.match(/^([^\d]*)(\d+)(.*)$/)
@@ -124,7 +116,6 @@ const ld = graph(
           var item = el.parentElement && el.parentElement.tagName === 'LI' ? el.parentElement : el
           var i = item.parentElement ? Array.prototype.indexOf.call(item.parentElement.children, item) : 0
           el.style.setProperty('--delay', Math.min(i, 6) * 90 + 'ms')
-          el.style.setProperty('--tilt', (i % 2 ? 2 : -2) + 'deg')
         })
         var io = new IntersectionObserver(
           function (entries) {

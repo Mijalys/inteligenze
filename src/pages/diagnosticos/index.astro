@@ -1,7 +1,8 @@
 ---
 import Base from '@/layouts/Base.astro'
-import PageHero from '@/components/PageHero.astro'
-import CtaBand from '@/components/CtaBand.astro'
+import Icon from '@/components/Icon.astro'
+import CorpPageHero from '@/components/corp/CorpPageHero.astro'
+import CorpCta from '@/components/corp/CorpCta.astro'
 import { site } from '@/data/site'
 
 const crumbs = [
@@ -12,6 +13,7 @@ const tools = [
   {
     name: 'Madurez en IA',
     href: '/diagnosticos/madurez-ia/',
+    icon: 'chart' as const,
     measures: 'Qué tan preparada está tu empresa para adoptar IA: datos, procesos, equipo y gobierno.',
     gets: 'Puntaje por área y recomendaciones de por dónde empezar.',
     cta: 'Hacer el test',
@@ -20,6 +22,7 @@ const tools = [
   {
     name: 'Autoevaluación de ciberseguridad',
     href: '/diagnosticos/ciberseguridad/',
+    icon: 'shield' as const,
     measures: 'Tu exposición frente a phishing, accesos y respuesta a incidentes.',
     gets: 'Nivel de riesgo y las acciones más urgentes.',
     cta: 'Evaluar mi riesgo',
@@ -28,6 +31,7 @@ const tools = [
   {
     name: 'Calculadora de ahorro por automatización',
     href: '/diagnosticos/calculadora-ahorro/',
+    icon: 'price' as const,
     measures: 'Horas y costo que hoy consume un proceso manual.',
     gets: 'Ahorro estimado mensual y anual.',
     cta: 'Calcular mi ahorro',
@@ -42,43 +46,42 @@ const tools = [
   pageType="CollectionPage"
   breadcrumbs={crumbs}
 >
-  <PageHero
-    eyebrow="Diagnósticos gratuitos"
+  <CorpPageHero
+    kicker="Diagnósticos gratuitos"
     title="Descubre en minutos dónde está tu empresa y por dónde empezar."
-    lead="Tres herramientas gratuitas para medir tu madurez en IA, tu exposición en ciberseguridad y el ahorro posible con automatización. Recibes un resultado inmediato y, si quieres, una conversación con nuestro equipo."
+    lead="Tres herramientas gratuitas con resultado inmediato. Si quieres, luego lo revisas con nuestro equipo."
     crumbs={crumbs}
   />
 
-  <section class="section pt-0" aria-label="Herramientas">
-    <div class="wrap grid gap-4 lg:grid-cols-3">
+  <section class="section" aria-label="Herramientas">
+    <div class="wrap grid gap-5 lg:grid-cols-3">
       {
         tools.map((t) => (
-          <article class="glass group relative flex flex-col p-7 hover:border-cyan/40">
-            <p class="font-mono text-[13px] text-cyan">{t.time}</p>
-            <h2 class="mt-6 text-2xl font-medium tracking-tight">
-              <a href={t.href} class="after:absolute after:inset-0 after:rounded-[24px]">{t.name}</a>
-            </h2>
-            <dl class="mt-5 grid gap-4 text-[15px]">
+          <a href={t.href} class="card flex flex-col p-7" data-reveal>
+            <div class="flex items-center justify-between">
+              <span class="flex size-12 items-center justify-center rounded-xl bg-navy text-cyan"><Icon name={t.icon} class="size-6" /></span>
+              <span class="rounded-full bg-surface px-3 py-1 text-[13px] font-medium text-text-2">{t.time}</span>
+            </div>
+            <h2 class="mt-6 text-2xl">{t.name}</h2>
+            <dl class="mt-5 grid gap-4 border-t border-rule pt-5 text-[15px]">
               <div>
-                <dt class="text-muted">Qué mide</dt>
-                <dd class="mt-1 text-mist">{t.measures}</dd>
+                <dt class="text-[12px] font-semibold uppercase tracking-[0.08em] text-text-3">Qué mide</dt>
+                <dd class="mt-1 text-text-2">{t.measures}</dd>
               </div>
               <div>
-                <dt class="text-muted">Qué recibes</dt>
-                <dd class="mt-1 text-mist">{t.gets}</dd>
+                <dt class="text-[12px] font-semibold uppercase tracking-[0.08em] text-text-3">Qué recibes</dt>
+                <dd class="mt-1 text-text-2">{t.gets}</dd>
               </div>
             </dl>
-            <span class="btn btn-ghost btn-sm mt-auto self-start">
-              {t.cta} <span class="arrow" aria-hidden="true">→</span>
-            </span>
-          </article>
+            <span class="link-arrow mt-auto pt-7">{t.cta} →</span>
+          </a>
         ))
       }
     </div>
-    <p class="wrap mt-8 text-[15px] text-muted">
+    <p class="wrap mt-8 text-[15px] text-text-3">
       Antes de mostrar el resultado completo te pedimos nombre, correo corporativo, empresa y cargo. Puedes revisarlo luego con un especialista en una conversación de {site.meetingMinutes} minutos.
     </p>
   </section>
 
-  <CtaBand title="¿Prefieres hablar directamente?" primary={{ label: 'Agenda un diagnóstico', href: '/contacto/' }} />
+  <CorpCta title="¿Prefieres hablar directamente?" />
 </Base>
