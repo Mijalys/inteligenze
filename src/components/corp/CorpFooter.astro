@@ -1,0 +1,63 @@
+---
+// Pie corporativo azul marino: datos de la empresa, secciones, diagnósticos y legales.
+import { Image } from 'astro:assets'
+import logo from '@/assets/logo-on-dark.png'
+import { founder, nav, site } from '@/data/site'
+import { services } from '@/data/services'
+
+const year = new Date(site.lastUpdated).getFullYear()
+const owner = [site.legalName, site.ruc ? `RUC ${site.ruc}` : null].filter(Boolean).join(' · ')
+const company = nav.filter((n) => !['/servicios/', '/diagnosticos/'].includes(n.href))
+const cols = [
+  { title: 'Servicios', links: services.map((s) => ({ label: s.name, href: `/servicios/${s.slug}/` })) },
+  {
+    title: 'Diagnósticos gratuitos',
+    links: [
+      { label: 'Madurez en IA', href: '/diagnosticos/madurez-ia/' },
+      { label: 'Autoevaluación de ciberseguridad', href: '/diagnosticos/ciberseguridad/' },
+      { label: 'Calculadora de ahorro', href: '/diagnosticos/calculadora-ahorro/' },
+    ],
+  },
+  { title: 'Empresa', links: [...company.map((n) => ({ label: n.label, href: n.href, external: n.external })), { label: 'Contacto', href: '/contacto/' }] },
+]
+---
+
+<footer class="on-dark bg-navy text-white">
+  <div class="wrap grid gap-12 py-16 lg:grid-cols-[1.3fr_repeat(3,1fr)]">
+    <div class="max-w-sm">
+      <Image src={logo} alt="Inteligenze" width={150} class="h-auto w-[140px]" />
+      <p class="mt-5 text-[15px] leading-relaxed text-mist">{site.shortDescription}</p>
+      <ul class="mt-6 grid gap-2 text-[15px] text-mist">
+        <li>{site.city}, {site.countryName}</li>
+        {site.email && <li><a class="hover:text-white" href={`mailto:${site.email}`}>{site.email}</a></li>}
+        <li><a class="hover:text-white" href={site.linkedinCompany ?? founder.linkedin} rel="noopener">LinkedIn ↗</a></li>
+      </ul>
+    </div>
+    {
+      cols.map((c) => (
+        <nav aria-label={c.title}>
+          <h2 class="text-[13px] font-semibold uppercase tracking-[0.08em] text-white">{c.title}</h2>
+          <ul class="mt-4 grid gap-2.5 text-[15px] text-mist">
+            {c.links.map((l) => (
+              <li>
+                <a class="hover:text-white" href={l.href} {...('external' in l && l.external ? { target: '_blank', rel: 'noopener' } : {})}>
+                  {l.label}
+                  {'external' in l && l.external && <span aria-hidden="true"> ↗</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+  <div class="wrap flex flex-col gap-3 border-t border-white/10 py-6 text-[13px] text-muted md:flex-row md:items-center md:justify-between">
+    <p>© {year} Inteligenze{owner && ` · ${owner}`}. Todos los derechos reservados.</p>
+    <p class="flex flex-wrap gap-x-5 gap-y-2">
+      <a class="hover:text-white" href="/privacidad/">Privacidad</a>
+      <a class="hover:text-white" href="/terminos/">Términos</a>
+      <a class="hover:text-white" href="/seguridad-de-datos/">Seguridad de datos</a>
+      <span>Orbe de <a class="underline underline-offset-2 hover:text-white" href="https://rareui.com" rel="noopener">Rare UI</a></span>
+    </p>
+  </div>
+</footer>

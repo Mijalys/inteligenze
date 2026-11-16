@@ -1,13 +1,11 @@
 ---
+import { Image } from 'astro:assets'
 import Base from '@/layouts/Base.astro'
-import PageHero from '@/components/PageHero.astro'
-import SectionHeading from '@/components/SectionHeading.astro'
-import Steps from '@/components/Steps.astro'
-import Faq from '@/components/Faq.astro'
-import CaseCard from '@/components/CaseCard.astro'
-import CtaBand from '@/components/CtaBand.astro'
+import Icon from '@/components/Icon.astro'
+import CorpHeading from '@/components/corp/CorpHeading.astro'
 import { services, type Service } from '@/data/services'
-import { getCase } from '@/data/cases'
+import { getCase, serviceLabels } from '@/data/cases'
+import { caseImage } from '@/lib/caseImages'
 import { faqPage, serviceSchema } from '@/lib/schema'
 
 export function getStaticPaths() {
@@ -22,64 +20,109 @@ const crumbs = [
   { name: 'Servicios', path: '/servicios/' },
   { name: service.name, path: `/servicios/${service.slug}/` },
 ]
+const stepIcons = ['search', 'contract', 'build', 'chart'] as const
 ---
 
 <Base
-  calm={service.slug === 'ciberseguridad'}
+  corp
   title={service.title}
   description={service.metaDescription}
   breadcrumbs={crumbs}
   schema={[serviceSchema(service), faqPage(service.faqs, `/servicios/${service.slug}/`)]}
 >
-  <PageHero eyebrow={service.name} title={service.promise} lead={service.lead} crumbs={crumbs}>
-    <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-      <a href="/contacto/" class="btn btn-primary">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>
-      <a href={service.secondaryCta.href} class="btn btn-ghost">{service.secondaryCta.label}</a>
-    </div>
-  </PageHero>
-
-  <section class="section pt-0" aria-labelledby="para-quien">
-    <div class="wrap grid gap-6 lg:grid-cols-2">
-      <div class="glass p-7 sm:p-10">
-        <p class="eyebrow mb-5">Para quién es</p>
-        <h2 id="para-quien" class="text-2xl font-medium tracking-tight sm:text-3xl">{service.audience}</h2>
-      </div>
-      <div class="glass p-7 sm:p-10">
-        <p class="eyebrow mb-5">Problemas que resuelve</p>
-        <ul class="grid gap-4">
+  <!-- Portada del servicio -->
+  <section class="border-b border-rule">
+    <div class="wrap pb-16 pt-10 lg:pb-20">
+      <nav aria-label="Ruta" class="text-[14px] text-text-3">
+        <ol class="flex flex-wrap items-center gap-2">
           {
-            service.problems.map((p) => (
-              <li class="flex gap-3 text-mist">
-                <span class="mt-2.5 size-1.5 shrink-0 rounded-full bg-cyan" aria-hidden="true" />
-                {p}
+            crumbs.map((c, i) => (
+              <li class="flex items-center gap-2">
+                {i > 0 && <span aria-hidden="true">/</span>}
+                {i < crumbs.length - 1 ? <a href={c.path} class="hover:text-navy">{c.name}</a> : <span aria-current="page" class="text-navy">{c.name}</span>}
               </li>
             ))
           }
-        </ul>
+        </ol>
+      </nav>
+
+      <div class="mt-10 grid gap-12 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+        <div>
+          <p class="flex items-center gap-2 text-teal"><Icon name={service.icon} class="size-5" /><span class="kicker">{service.name}</span></p>
+          <h1 class="mt-5 text-[clamp(34px,4.4vw,54px)] leading-[1.08]">{service.promise}</h1>
+          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-text-2">{service.lead}</p>
+          <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a href="/contacto/" class="btn btn-navy">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>
+            <a href={service.secondaryCta.href} class="btn btn-outline">{service.secondaryCta.label}</a>
+          </div>
+        </div>
+
+        <!-- Resumen -->
+        <aside class="self-start rounded-2xl border border-rule bg-surface p-7" aria-label="En resumen">
+          <p class="kicker">En resumen</p>
+          <dl class="mt-5 grid gap-5 text-[15px]">
+            <div>
+              <dt class="font-semibold">Para quién</dt>
+              <dd class="mt-1 leading-relaxed text-text-2">{service.audience.replace(/^Para /, '').replace(/^\w/, (c) => c.toUpperCase())}</dd>
+            </div>
+            <div class="border-t border-rule pt-5">
+              <dt class="font-semibold">Cómo se contrata</dt>
+              <dd class="mt-1 leading-relaxed text-text-2">Por ciclos, con alcance, fecha y precio acordados por escrito antes de empezar.</dd>
+            </div>
+            <div class="border-t border-rule pt-5">
+              <dt class="font-semibold">Primer paso</dt>
+              <dd class="mt-1 leading-relaxed text-text-2">Un diagnóstico inicial con el plan y el precio del primer ciclo.</dd>
+            </div>
+          </dl>
+        </aside>
       </div>
     </div>
   </section>
 
-  <section class="section pt-0" aria-labelledby="entregamos">
-    <div class="wrap">
-      <SectionHeading id="entregamos" eyebrow="Qué entregamos" title="Lo que recibes al cerrar cada ciclo." />
-      <div class="mt-12 grid gap-4 md:grid-cols-2">
+  <!-- Problemas -->
+  <section class="section" aria-labelledby="problemas">
+    <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
+      <CorpHeading id="problemas" kicker="Problemas que resuelve" title="Si esto te suena, podemos ayudarte." />
+      <ul class="grid content-start gap-4 sm:grid-cols-2">
         {
-          service.deliverables.map((d) => (
-            <div class="glass p-7">
-              {d.title && <h3 class="text-xl font-medium tracking-tight">{d.title}</h3>}
-              <p class="mt-2 text-mist">{d.body}</p>
+          service.problems.map((p) => (
+            <li class="card flex gap-4 p-5" data-reveal>
+              <span class="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-surface text-teal" aria-hidden="true">
+                <Icon name="check" class="size-4" />
+              </span>
+              <span class="leading-relaxed text-text-2">{p}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Entregables -->
+  <section class="section border-y border-rule bg-surface" aria-labelledby="entregamos">
+    <div class="wrap">
+      <CorpHeading id="entregamos" kicker="Qué entregamos" title="Lo que recibes al cerrar cada ciclo." />
+      <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {
+          service.deliverables.map((d, i) => (
+            <div class="card border-t-[3px] border-t-teal p-6" data-reveal>
+              <span class="text-[13px] font-semibold text-text-3">0{i + 1}</span>
+              {d.title && <h3 class="mt-4 text-lg leading-snug">{d.title}</h3>}
+              <p class="mt-2 text-[15px] leading-relaxed text-text-2">{d.body}</p>
             </div>
           ))
         }
       </div>
       {
         service.examples && (
-          <div class="mt-10">
-            <h3 class="text-xl font-medium">Ejemplos de casos</h3>
+          <div class="mt-12 rounded-2xl border border-rule bg-white p-7" data-reveal>
+            <h3 class="text-lg">Ejemplos de casos que automatizamos</h3>
             <ul class="mt-5 grid gap-3 md:grid-cols-2">
               {service.examples.map((e) => (
-                <li class="chip min-h-0 justify-start rounded-2xl py-3 text-[15px]">{e}</li>
+                <li class="flex items-start gap-3 text-text-2">
+                  <Icon name="flow" class="mt-0.5 size-5 shrink-0 text-teal" />
+                  {e}
+                </li>
               ))}
             </ul>
           </div>
@@ -88,46 +131,113 @@ const crumbs = [
     </div>
   </section>
 
-  <section class="section pt-0" aria-labelledby="como">
+  <!-- Método -->
+  <section class="section" aria-labelledby="como">
     <div class="wrap">
-      <SectionHeading id="como" eyebrow="Cómo trabajamos" title="Cuatro pasos, con alcance, fecha y precio por escrito." />
-      <div class="mt-12"><Steps steps={service.steps} /></div>
+      <CorpHeading id="como" kicker="Cómo trabajamos" title="Cuatro pasos, con alcance, fecha y precio por escrito." />
+      <ol class="mt-12 grid gap-px overflow-hidden rounded-2xl border border-rule bg-rule md:grid-cols-2 lg:grid-cols-4">
+        {
+          service.steps.map((st, i) => (
+            <li class="bg-white p-7" data-reveal>
+              <div class="flex items-center justify-between">
+                <span class="flex size-10 items-center justify-center rounded-full bg-navy text-[15px] font-semibold text-white">{i + 1}</span>
+                <Icon name={stepIcons[i % stepIcons.length]} class="size-6 text-teal" />
+              </div>
+              <h3 class="mt-6 text-lg">{st.title}</h3>
+              <p class="mt-2 text-[15px] leading-relaxed text-text-2">{st.body}</p>
+            </li>
+          ))
+        }
+      </ol>
     </div>
   </section>
 
+  <!-- Caso relacionado -->
   {
     related && (
-      <section class="section pt-0" aria-labelledby="caso">
-        <div class="wrap grid items-center gap-10 lg:grid-cols-[1fr_1.2fr]">
-          <SectionHeading id="caso" eyebrow="Caso relacionado" title="Así se ve en la práctica." />
-          <CaseCard item={related} />
+      <section class="section border-y border-rule bg-surface" aria-labelledby="caso">
+        <div class="wrap">
+          <CorpHeading id="caso" kicker="Caso relacionado" title="Así se ve en la práctica." />
+          <a href={`/casos/${related.slug}/`} class="card mt-12 grid overflow-hidden md:grid-cols-[1.1fr_1fr]" data-reveal>
+            {related.cover ? (
+              <Image
+                src={caseImage(related.cover.file)}
+                alt={related.cover.alt}
+                widths={[640, 960]}
+                sizes="(min-width: 768px) 600px, 100vw"
+                class="h-full max-h-[420px] w-full object-cover object-top"
+              />
+            ) : (
+              <div class="grid-lines flex min-h-[260px] items-end bg-navy p-8" aria-hidden="true">
+                <span class="text-[13px] font-semibold uppercase tracking-[0.08em] text-cyan">{related.tech.join(' · ')}</span>
+              </div>
+            )}
+            <div class="flex flex-col p-8">
+              <p class="kicker">{related.client}</p>
+              <h3 class="mt-3 text-2xl leading-snug">{related.title}</h3>
+              <p class="mt-3 leading-relaxed text-text-2">{related.summary}</p>
+              <dl class="mt-auto grid grid-cols-2 gap-6 border-t border-rule pt-6">
+                {related.metrics.slice(0, 2).map((m) => (
+                  <div>
+                    <dt class="text-2xl font-semibold tracking-tight">{m.value}</dt>
+                    <dd class="text-[13px] text-text-3">{m.label}</dd>
+                  </div>
+                ))}
+              </dl>
+              <span class="link-arrow mt-6">Ver el caso completo →</span>
+              <span class="sr-only">{serviceLabels[related.services[0]]}</span>
+            </div>
+          </a>
         </div>
       </section>
     )
   }
 
-  <section class="section pt-0" aria-labelledby="faq">
-    <div class="wrap grid gap-10 lg:grid-cols-[1fr_1.6fr]">
-      <SectionHeading id="faq" eyebrow="Preguntas frecuentes" title={`Sobre ${service.name}`} />
-      <Faq faqs={service.faqs} />
+  <!-- Preguntas frecuentes -->
+  <section class="section" aria-labelledby="faq">
+    <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
+      <CorpHeading id="faq" kicker="Preguntas frecuentes" title={`Sobre ${service.name}`} />
+      <div class="divide-y divide-rule border-y border-rule">
+        {
+          service.faqs.map((f, i) => (
+            <details class="group py-5" open={i === 0}>
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden">
+                <h3 class="text-lg">{f.q}</h3>
+                <span class="flex size-8 shrink-0 items-center justify-center rounded-full border border-rule text-teal transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+              </summary>
+              <p class="mt-3 max-w-2xl leading-relaxed text-text-2">{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
     </div>
   </section>
 
-  <section class="pb-4" aria-label="Otros servicios">
-    <div class="wrap grid gap-4 md:grid-cols-2">
+  <!-- Otros servicios -->
+  <section class="pb-[clamp(72px,10vw,136px)]" aria-label="Otros servicios">
+    <div class="wrap grid gap-5 md:grid-cols-2">
       {
         others.map((o) => (
-          <a href={`/servicios/${o.slug}/`} class="glass group flex items-center justify-between gap-6 p-6 hover:border-cyan/40">
-            <span>
-              <span class="block text-[13px] text-muted">Otro servicio</span>
-              <span class="mt-1 block text-xl font-medium">{o.name}</span>
+          <a href={`/servicios/${o.slug}/`} class="card flex items-center gap-5 p-6">
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-surface text-teal">
+              <Icon name={o.icon} class="size-6" />
             </span>
-            <span class="text-cyan transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+            <span class="flex-1">
+              <span class="block text-[13px] text-text-3">Otro servicio</span>
+              <span class="block text-lg font-semibold">{o.name}</span>
+            </span>
+            <span class="text-teal" aria-hidden="true">→</span>
           </a>
         ))
       }
     </div>
   </section>
 
-  <CtaBand title={service.closing} />
+  <!-- Cierre -->
+  <section class="on-dark grid-lines bg-navy text-white" aria-labelledby="cierre">
+    <div class="wrap flex flex-col items-start justify-between gap-8 py-20 lg:flex-row lg:items-center">
+      <h2 id="cierre" class="max-w-2xl text-[clamp(28px,3.4vw,40px)] leading-tight text-white">{service.closing}</h2>
+      <a href="/contacto/" class="btn btn-white shrink-0">Agenda un diagnóstico <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
 </Base>

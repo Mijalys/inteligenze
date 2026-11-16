@@ -1,0 +1,136 @@
+---
+// Cabecera corporativa: blanca, fija arriba, con Servicios desplegable y un botón sólido de contacto.
+import { Image } from 'astro:assets'
+import logo from '@/assets/logo-on-light.png'
+import Icon from '@/components/Icon.astro'
+import { nav } from '@/data/site'
+import { services } from '@/data/services'
+
+const path = Astro.url.pathname
+const isActive = (href: string) => path === href || path.startsWith(href)
+const link = (href: string) => [
+  'flex items-center gap-1.5 whitespace-nowrap px-3 py-2 text-[15px] font-medium transition-colors',
+  isActive(href) ? 'text-navy' : 'text-text-2 hover:text-navy',
+]
+---
+
+<header class="sticky top-0 z-40 border-b border-rule bg-white/95 backdrop-blur">
+  <div class="wrap flex h-[72px] items-center justify-between gap-6">
+    <a href="/" class="flex shrink-0 items-center" aria-label="Inteligenze, inicio">
+      <Image src={logo} alt="Inteligenze" width={150} class="h-auto w-[136px]" loading="eager" />
+    </a>
+
+    <nav aria-label="Principal" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {
+          nav.map((item) =>
+            item.href === '/servicios/' ? (
+              <li class="group relative" data-dropdown>
+                <button type="button" class:list={link(item.href)} aria-expanded="false" aria-controls="menu-servicios" data-dropdown-button>
+                  {item.label}
+                  <Icon name="chevron" class="size-4 transition-transform group-hover:rotate-180 group-[.is-open]:rotate-180" />
+                </button>
+                <div
+                  id="menu-servicios"
+                  class="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 group-[.is-open]:visible group-[.is-open]:opacity-100"
+                >
+                  <div class="w-[520px] rounded-xl border border-rule bg-white p-2 shadow-[0_24px_60px_rgb(5_11_28/0.14)]">
+                    <ul class="grid">
+                      {services.map((s) => (
+                        <li>
+                          <a href={`/servicios/${s.slug}/`} class="flex gap-4 rounded-lg p-4 transition-colors hover:bg-surface">
+                            <span class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface text-teal">
+                              <Icon name={s.icon} class="size-5" />
+                            </span>
+                            <span>
+                              <span class="block font-semibold text-navy">{s.name}</span>
+                              <span class="mt-0.5 block text-[14px] leading-snug text-text-3">{s.short}</span>
+                            </span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                    <a href="/servicios/" class="mt-1 flex items-center justify-between border-t border-rule px-4 pb-2 pt-3 text-[14px] font-semibold text-teal">
+                      Ver todos los servicios <span aria-hidden="true">→</span>
+                    </a>
+                  </div>
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a
+                  href={item.href}
+                  aria-current={!item.external && isActive(item.href) ? 'page' : undefined}
+                  class:list={link(item.href)}
+                  {...(item.external ? { target: '_blank', rel: 'noopener' } : {})}
+                >
+                  {item.label}
+                  {item.external && <><span class="text-[12px] text-text-3" aria-hidden="true">↗</span><span class="sr-only"> (se abre en otra pestaña)</span></>}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="/contacto/" class="btn btn-navy btn-sm hidden sm:inline-flex">Contactar</a>
+      <details class="group relative lg:hidden">
+        <summary class="flex size-11 cursor-pointer list-none items-center justify-center rounded-lg border border-rule [&::-webkit-details-marker]:hidden" aria-label="Abrir menú">
+          <svg class="size-5 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+          <svg class="hidden size-5 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </summary>
+        <div class="absolute right-0 top-14 max-h-[80vh] w-[min(88vw,340px)] overflow-y-auto rounded-xl border border-rule bg-white p-2 shadow-[0_24px_60px_rgb(5_11_28/0.14)]">
+          <ul class="grid">
+            {
+              nav.map((item) => (
+                <li>
+                  <a href={item.href} class="flex items-center gap-2 rounded-lg px-4 py-3 font-medium text-navy hover:bg-surface" {...(item.external ? { target: '_blank', rel: 'noopener' } : {})}>
+                    {item.label}
+                    {item.external && <span class="text-[12px] text-text-3" aria-hidden="true">↗</span>}
+                  </a>
+                  {item.href === '/servicios/' && (
+                    <ul class="mb-1 ml-4 grid border-l border-rule pl-2">
+                      {services.map((s) => (
+                        <li>
+                          <a href={`/servicios/${s.slug}/`} class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px] text-text-2 hover:bg-surface">
+                            <Icon name={s.icon} class="size-5 text-teal" />
+                            {s.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))
+            }
+            <li class="p-2"><a href="/contacto/" class="btn btn-navy w-full">Contactar</a></li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-dropdown]').forEach((dd) => {
+    const button = dd.querySelector<HTMLButtonElement>('[data-dropdown-button]')!
+    const set = (open: boolean) => {
+      dd.classList.toggle('is-open', open)
+      button.setAttribute('aria-expanded', String(open))
+    }
+    button.addEventListener('click', () => set(!dd.classList.contains('is-open')))
+    dd.addEventListener('mouseenter', () => button.setAttribute('aria-expanded', 'true'))
+    dd.addEventListener('mouseleave', () => set(false))
+    dd.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        set(false)
+        button.focus({ preventScroll: true })
+      }
+    })
+    document.addEventListener('click', (e) => {
+      if (!dd.contains(e.target as Node)) set(false)
+    })
+  })
+</script>

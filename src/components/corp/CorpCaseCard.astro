@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets'
+import { type Case, serviceLabels } from '@/data/cases'
+import { caseImage } from '@/lib/caseImages'
+interface Props {
+  item: Case
+  headingLevel?: 'h2' | 'h3'
+}
+const { item, headingLevel: H = 'h3' } = Astro.props
+const lead = item.metrics[0]
+---
+
+<article class="card is-link group relative flex h-full flex-col overflow-hidden" data-reveal>
+  <div class="aspect-[16/9] overflow-hidden border-b border-rule bg-surface">
+    {
+      item.cover ? (
+        <Image
+          src={caseImage(item.cover.file)}
+          alt={item.cover.alt}
+          widths={[480, 720]}
+          sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+          class="size-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+        />
+      ) : (
+        <div class="grid-lines flex size-full items-end bg-navy p-5" aria-hidden="true">
+          <span class="text-[13px] font-semibold uppercase tracking-[0.08em] text-cyan">{item.tech.join(' · ')}</span>
+        </div>
+      )
+    }
+  </div>
+  <div class="flex flex-1 flex-col p-6">
+    <p class="text-[13px] font-semibold uppercase tracking-[0.08em] text-teal">{item.client}</p>
+    <H class="mt-2 text-xl leading-snug">
+      <a href={`/casos/${item.slug}/`} class="after:absolute after:inset-0">{item.title}</a>
+    </H>
+    <p class="mt-3 text-[15px] leading-relaxed text-text-2">{item.summary}</p>
+    <div class="mt-auto flex items-end justify-between gap-4 border-t border-rule pt-5">
+      {
+        lead && (
+          <div>
+            <p class="text-2xl font-semibold tracking-tight">{lead.value}</p>
+            <p class="text-[13px] text-text-3">{lead.label}</p>
+          </div>
+        )
+      }
+      <span class="shrink-0 text-[13px] text-text-3">{serviceLabels[item.services[0]]}</span>
+    </div>
+  </div>
+</article>

@@ -21,6 +21,15 @@
   --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
 
   --radius-card: 24px;
+
+  /* Estilo corporativo claro */
+  --color-navy: #050b1c;
+  --color-navy-2: #0d1a33;
+  --color-surface: #f4f6f9;
+  --color-rule: #e2e7ee;
+  --color-text-2: #3a4456;
+  --color-text-3: #5a6478;
+  --color-teal: #0e6f6b;
 }
 
 @layer base {
@@ -176,6 +185,57 @@
   .label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--color-mist); }
 }
 
+/* ===== Estilo corporativo claro ===== */
+html.corp-root { color-scheme: light; background: #ffffff; }
+.corp {
+  background: #ffffff;
+  color: var(--color-navy);
+  color-scheme: light;
+}
+.corp h1, .corp h2, .corp h3 { font-weight: 600; letter-spacing: -0.025em; }
+.corp ::selection { background: var(--color-navy); color: #fff; }
+.corp :focus-visible { outline-color: var(--color-teal); }
+.corp .kicker {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+}
+.corp .on-dark .kicker { color: var(--color-cyan); }
+.corp .btn { border-radius: 10px; min-height: 50px; font-weight: 600; }
+.corp .btn-sm { min-height: 42px; border-radius: 8px; }
+.btn-navy { background: var(--color-navy); color: #fff; }
+.btn-navy:hover { background: var(--color-navy-2); }
+.btn-outline { background: #fff; color: var(--color-navy); border-color: var(--color-rule); }
+.btn-outline:hover { border-color: var(--color-navy); }
+.btn-white { background: #fff; color: var(--color-navy); }
+.btn-white:hover { background: var(--color-cyan-soft); }
+.card {
+  background: #fff;
+  border: 1px solid var(--color-rule);
+  border-radius: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+a.card:hover, .card.is-link:hover {
+  border-color: #c3ccd8;
+  box-shadow: 0 12px 32px rgb(5 11 28 / 0.08);
+}
+.corp .link-arrow { color: var(--color-teal); font-weight: 600; }
+.corp .link-arrow:hover { text-decoration: underline; text-underline-offset: 4px; }
+.corp .field { background: #fff; color: var(--color-navy); border-color: #cfd6e0; border-radius: 10px; }
+.corp .field::placeholder { color: var(--color-text-3); }
+.corp .field:focus { border-color: var(--color-teal); box-shadow: 0 0 0 3px rgb(14 111 107 / 0.15); }
+.corp .label { color: var(--color-text-2); }
+/* Rejilla tenue para paneles azul marino */
+.grid-lines {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
 /* Shown under the WebGL orb until it loads, or when WebGL is off */
 .orb-fallback {
   background: radial-gradient(circle at 50% 22%, #ffffff 0 26%, #9fe8e4 52%, #107d78 88%);
@@ -297,7 +357,7 @@
   /* Modo sobrio: solo aparecer suave, sin rebotes, giros ni saltos */
   [data-calm].js main :is(.glass, [data-reveal]):not(.is-in) { transform: translateY(16px); }
   [data-calm].js main :is(.glass, [data-reveal]) {
-    transition: opacity 0.5s ease var(--delay, 0ms), transform 0.6s ease var(--delay, 0ms), border-color 0.2s ease;
+    transition: opacity 0.5s ease var(--delay, 0ms), transform 0.6s ease var(--delay, 0ms), border-color 0.2s ease, box-shadow 0.2s ease;
   }
   [data-calm].js .word { animation-name: calm-in; animation-timing-function: ease-out; animation-duration: 0.6s; }
   @keyframes calm-in {
