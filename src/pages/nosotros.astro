@@ -25,18 +25,6 @@ const principles = [
   { t: 'Personas al mando', b: 'La IA acelera, las personas deciden.', icon: 'users' as const },
   { t: 'Seguridad desde el diseño', b: 'Protegemos tus datos y tu operación.', icon: 'shield' as const },
 ]
-
-const career = [
-  { org: 'Headland', role: 'Líder del programa de formación en IA', when: '2026 – hoy' },
-  { org: 'Wirbi', role: 'Board Member, vertical de IA y Product', when: '2026 – hoy' },
-  { org: 'Ventabot', role: 'Co-Founder y CPO · Google for Startups', when: '2024 – 2025' },
-  { org: 'Primax Solutions', role: 'Product Designer', when: '2023' },
-  { org: 'Niubiz', role: 'Product Designer', when: '2022' },
-  { org: 'Redeban', role: 'Lead Product Designer', when: '2021 – 2022' },
-  { org: 'Caja Metropolitana de Lima', role: 'Lead Product Designer', when: '2021' },
-  { org: 'Caja Cusco', role: 'Product Designer', when: '2020' },
-  { org: 'Banco Ripley Perú', role: 'Head of UX Design', when: '2018 – 2020' },
-]
 ---
 
 <Base
@@ -66,9 +54,9 @@ const career = [
   </section>
 
   <section class="section" aria-labelledby="liderazgo">
-    <div class="wrap grid gap-12 lg:grid-cols-[minmax(0,340px)_1fr_minmax(0,360px)] lg:gap-14">
+    <div class="wrap grid gap-12 lg:grid-cols-[minmax(0,380px)_1fr] lg:gap-16">
       <div class="mx-auto w-full max-w-[340px]" data-reveal><FounderCard /></div>
-      <div data-reveal>
+      <div class="max-w-2xl self-center" data-reveal>
         <p class="kicker">Liderazgo</p>
         <h2 id="liderazgo" class="mt-3 text-3xl">{founder.name}</h2>
         <p class="text-text-3">{founder.role}</p>
@@ -81,22 +69,6 @@ const career = [
           <a href={founder.linkedin} class="btn btn-outline btn-sm" rel="noopener">LinkedIn ↗</a>
           <a href={founder.portfolio} class="btn btn-outline btn-sm" rel="noopener">Portafolio ↗</a>
         </div>
-      </div>
-      <div data-reveal>
-        <p class="kicker">Recorrido</p>
-        <ol class="mt-3 border-t border-rule">
-          {
-            career.map((c) => (
-              <li class="grid grid-cols-[1fr_auto] gap-4 border-b border-rule py-3">
-                <span>
-                  <span class="block font-semibold">{c.org}</span>
-                  <span class="block text-[14px] text-text-3">{c.role}</span>
-                </span>
-                <span class="text-[13px] text-text-3">{c.when}</span>
-              </li>
-            ))
-          }
-        </ol>
       </div>
     </div>
   </section>
